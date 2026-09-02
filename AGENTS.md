@@ -64,6 +64,10 @@ Nexus is a dual-layered AI commerce platform built on Razorpay test-mode APIs. I
 | **Google ADK CLI (`adk`)** | Agent execution and developer server | Launches the agent API server (`adk api_server agents/orchestrator.py --port 8000`) or interactive web UI (`adk web`). |
 | **OpenSSL** | Cryptographic key generation | Generates 32-byte hex encryption keys (`openssl rand -hex 32`) for AES-256-GCM encryption of merchant API secrets. |
 | **Razorpay Dashboard (Test Mode)** | API key provisioning & transaction verification | Sourcing test key pairs (`rzp_test_*`) and verifying order/payment records created by the ADK agent. |
+| **Obscura (`obscura`)** | Lightweight headless browser & CDP server | Headless browser execution, CDP automation, and scraping for Next.js frontend testing and agent simulation. |
+| **Graphify (`graphify`)** | Codebase knowledge graph & AST extractor | AST/semantic graph extraction, callflow inspection, dependency tracing, and god-node architectural analysis. |
+| **Fallow (`fallow` / `npx fallow`)** | TypeScript/JS codebase & dead code analyzer | Unused export tracing, circular dependency detection, complexity hotspots, and architectural boundary guarding. |
+
 
 ## Installation
 
@@ -146,9 +150,48 @@ Nexus is a dual-layered AI commerce platform built on Razorpay test-mode APIs. I
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 
-## Conventions
+## Conventions & Development Tools
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Web Framework Standard
+
+- **Framework**: **Next.js 14 (App Router)** (`next@14.2.24`, `react@18.3.1`, `react-dom@18.3.1`).
+- **Colocation**: Colocates both public Merchant-as-an-API (MaaS) gateway route handlers (`/api/maas/[merchant_id]/*`) and merchant dashboard UI in a single TypeScript framework.
+- **Server Components & Route Handlers**: Isolate server secrets (AES keys, DB connections) completely from client components.
+- **Money Model**: Strictly integer paise (`amount_paise`) throughout all schemas and handlers. Never use floating-point numbers for currency.
+
+### CLI Tools Implementation
+
+#### 1. Obscura (`obscura`)
+A lightweight headless browser engine with Chrome DevTools Protocol (CDP) server for web scraping, synthetic agent browsing, and frontend testing.
+- **Commands**:
+  - `obscura fetch <URL>`: Fetch page content with full JavaScript execution.
+  - `obscura scrape <URL>`: Scrape and extract clean LLM-ready markdown from web pages.
+  - `obscura serve -p <PORT>`: Start headless browser CDP server (default port 9222).
+  - `obscura mcp`: Run as Model Context Protocol server.
+- **Critical Flags**:
+  - `--allow-private-network`: Essential for local development against `http://localhost:3000` (Next.js) or `http://127.0.0.1:8000` (ADK), bypassing SSRF protections.
+  - `--user-agent <STRING>`: Set custom User-Agent to emulate specific buyer agents.
+  - `--storage-dir <PATH>`: Specify persistent session storage directory.
+
+#### 2. Graphify (`graphify`)
+Code intelligence and knowledge graph builder that constructs structural AST and semantic dependency graphs across the codebase.
+- **Commands**:
+  - `graphify extract <path>`: Extract AST and semantic relationships (`--backend gemini`, `--code-only`, `--postgres <DSN>` for live schema extraction).
+  - `graphify query "<question>"`: Query code architecture and symbol relationships using semantic search.
+  - `graphify path <source> <target>`: Trace call graphs and dependency paths between modules.
+  - `graphify god-nodes`: Detect architectural hubs and high-centrality files/symbols.
+  - `graphify tree`: Generate interactive D3 collapsible-tree visualization (`GRAPH_TREE.html`).
+  - `graphify reflect`: Aggregate development feedback and outcomes into reflection lessons.
+
+#### 3. Fallow (`fallow` / `npx fallow`)
+High-speed TypeScript and JavaScript codebase analyzer for dead code, unused dependencies, complexity hotspots, and architectural boundaries.
+- **Commands**:
+  - `fallow dead-code`: Trace unused exports (`--trace <file>:<export>`), unreferenced dependencies (`--trace-dependency <name>`), and circular dependencies.
+  - `fallow dupes`: Detect copy-paste and structural code duplication (`--trace dup:<fingerprint>`).
+  - `fallow health`: Inspect cyclomatic complexity, maintainability hotspots (`--hotspots`), and test coverage gaps (`--coverage-gaps`).
+  - `fallow audit --base <ref>`: Review changed files for dead code, complexity, and styling before opening a PR or committing.
+  - `fallow guard <files>`: Enforce architecture boundary rules before editing files.
+  - `fallow fix`: Auto-fix safe unused code findings.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->

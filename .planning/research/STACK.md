@@ -47,6 +47,10 @@
 | **Google ADK CLI (`adk`)** | Agent execution and developer server | Launches the agent API server (`adk api_server agents/orchestrator.py --port 8000`) or interactive web UI (`adk web`). |
 | **OpenSSL** | Cryptographic key generation | Generates 32-byte hex encryption keys (`openssl rand -hex 32`) for AES-256-GCM encryption of merchant API secrets. |
 | **Razorpay Dashboard (Test Mode)** | API key provisioning & transaction verification | Sourcing test key pairs (`rzp_test_*`) and verifying order/payment records created by the ADK agent. |
+| **Obscura (`obscura`)** | Lightweight headless browser & CDP runner | Automates browser sessions, testing, and scraping. Run `obscura serve -p 9222 --allow-private-network` for local CDP automation or `obscura scrape <url>` / `obscura fetch <url>`. |
+| **Graphify (`graphify`)** | Code intelligence & knowledge graph CLI | Extracts AST & semantic dependency graphs (`graphify extract <path> --backend gemini`). Queries architecture hubs (`graphify god-nodes`), traces paths (`graphify path`), and visualizes trees (`graphify tree`). |
+| **Fallow (`fallow` / `npx fallow`)** | TypeScript/JS codebase analyzer | Enforces dead code elimination, dependency hygiene, and architectural boundaries. Runs `fallow dead-code`, `fallow dupes`, `fallow health --hotspots`, `fallow guard`, and `fallow audit --base <ref>`. |
+
 
 ---
 
