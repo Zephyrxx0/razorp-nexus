@@ -123,11 +123,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | EVAL-04 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 34 total
-- Mapped to phases: 34
+- v1 requirements: 33 total
+- Mapped to phases: 33
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-03*
-*Last updated: 2026-09-03 after roadmap creation*
+*Last updated: 2026-09-03 after initial definition*
 

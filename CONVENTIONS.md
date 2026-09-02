@@ -45,3 +45,4 @@ High-speed TypeScript and JavaScript codebase analyzer for dead code, unused dep
   - `fallow audit --base <ref>`: Review changed files for dead code, complexity, and styling before opening a PR or committing.
   - `fallow guard <files>`: Enforce architecture boundary rules before editing files.
   - `fallow fix`: Auto-fix safe unused code findings.
+
