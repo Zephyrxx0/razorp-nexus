@@ -1,6 +1,8 @@
 import asyncio
+from datetime import datetime, timezone
 import pytest
 from app.core.lock import AsyncRWLock
+from app.engine.graph_manager import GraphManager
 
 
 @pytest.mark.asyncio
@@ -64,3 +66,187 @@ async def test_async_rw_lock_concurrency():
 
     await asyncio.gather(reader_task, writer_task)
     assert events.index("reader_1_end") < events.index("writer_1_start"), "Writer started before reader finished"
+
+
+def test_node_key_formatting_and_prefix_stripping():
+    """Asserts that get_node_key normalizes prefixes to {signal_type}:{signal_val} (D-03)."""
+    assert GraphManager.get_node_key("email", "sha256:abc") == "email:abc"
+    assert GraphManager.get_node_key("email:sha256:abc") == "email:abc"
+    assert GraphManager.get_node_key("ip", "103.21.44") == "ip:103.21.44"
+    assert GraphManager.get_node_key("ip:103.21.44") == "ip:103.21.44"
+    assert GraphManager.get_node_key("device", "sha256:dev_xyz") == "device:dev_xyz"
+    assert GraphManager.get_node_key("device:dev_xyz") == "device:dev_xyz"
+    assert GraphManager.get_node_key("upi", "buyer@upi") == "upi:buyer@upi"
+
+
+def test_ingest_signal_clique_creation(clean_graph_manager: GraphManager, sample_fingerprint_clean: dict):
+    """Asserts that 5-signal fingerprint ingestion creates 5 nodes and 10 clique edges with weight 1.0."""
+    gm = clean_graph_manager
+    merchant_id = "11111111-1111-1111-1111-111111111111"
+    tx_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+    nodes_updated, edges_updated = gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_id,
+        transaction_id=tx_id,
+        outcome="SUCCESS",
+        amount_paise=199900,
+    )
+
+    assert nodes_updated == 5
+    assert edges_updated == 10  # 5 * 4 / 2
+    assert gm.graph.number_of_nodes() == 5
+    assert gm.graph.number_of_edges() == 10
+
+    # Verify nodes attributes
+    for node_id in gm.graph.nodes:
+        data = gm.graph.nodes[node_id]
+        assert data["transaction_count"] == 1
+        assert data["successful_transaction_count"] == 1
+        assert data["failed_transaction_count"] == 0
+        assert merchant_id in data["merchant_ids_seen"]
+        assert len(data["transactions"]) == 1
+        assert data["transactions"][0]["tx_id"] == tx_id
+
+    # Verify edges attributes
+    for u, v in gm.graph.edges:
+        edge = gm.graph[u][v]
+        assert edge["weight"] == 1.0
+        assert merchant_id in edge["merchants_shared"]
+        assert edge["edge_type"] == "SHARED_TRANSACTION"
+
+
+def test_ingest_signal_repeat_increments_weight(clean_graph_manager: GraphManager, sample_fingerprint_clean: dict):
+    """Asserts that repeated ingestion across merchants increments transaction count and edge weights."""
+    gm = clean_graph_manager
+    merchant_1 = "11111111-1111-1111-1111-111111111111"
+    merchant_2 = "22222222-2222-2222-2222-222222222222"
+
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_1,
+        transaction_id="tx-001",
+        outcome="SUCCESS",
+        amount_paise=100000,
+    )
+
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_2,
+        transaction_id="tx-002",
+        outcome="SUCCESS",
+        amount_paise=200000,
+    )
+
+    assert gm.graph.number_of_nodes() == 5
+    assert gm.graph.number_of_edges() == 10
+
+    for node_id in gm.graph.nodes:
+        data = gm.graph.nodes[node_id]
+        assert data["transaction_count"] == 2
+        assert data["successful_transaction_count"] == 2
+        assert data["failed_transaction_count"] == 0
+        assert merchant_1 in data["merchant_ids_seen"]
+        assert merchant_2 in data["merchant_ids_seen"]
+        assert len(data["transactions"]) == 2
+
+    for u, v in gm.graph.edges:
+        edge = gm.graph[u][v]
+        assert edge["weight"] == 2.0
+        assert merchant_1 in edge["merchants_shared"]
+        assert merchant_2 in edge["merchants_shared"]
+
+
+def test_ingest_signal_tracks_failures(clean_graph_manager: GraphManager, sample_fingerprint_clean: dict):
+    """Asserts that FAILED and DENIED transaction outcomes increment failed_transaction_count."""
+    gm = clean_graph_manager
+    merchant_id = "33333333-3333-3333-3333-333333333333"
+
+    # Ingest FAILED transaction
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_id,
+        transaction_id="fail-001",
+        outcome="FAILED",
+        amount_paise=50000,
+    )
+
+    for node_id in gm.graph.nodes:
+        data = gm.graph.nodes[node_id]
+        assert data["transaction_count"] == 1
+        assert data["failed_transaction_count"] == 1
+        assert data["successful_transaction_count"] == 0
+
+    # Ingest DENIED transaction
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_id,
+        transaction_id="deny-001",
+        outcome="DENIED",
+        amount_paise=50000,
+    )
+
+    for node_id in gm.graph.nodes:
+        data = gm.graph.nodes[node_id]
+        assert data["transaction_count"] == 2
+        assert data["failed_transaction_count"] == 2
+        assert data["successful_transaction_count"] == 0
+
+
+def test_neighbors_1hop_and_2hop(clean_graph_manager: GraphManager):
+    """Verifies that 1-hop and 2-hop neighbor separation correctly isolates adjacent and distance-2 nodes."""
+    gm = clean_graph_manager
+    # Manually build chain A - B - C - D
+    gm.graph.add_edge("email:A", "device:B")
+    gm.graph.add_edge("device:B", "ip:C")
+    gm.graph.add_edge("ip:C", "upi:D")
+
+    # For node A:
+    assert gm.get_neighbors_1hop("email:A") == {"device:B"}
+    assert gm.get_neighbors_2hop("email:A") == {"ip:C"}
+
+    # For node B:
+    assert gm.get_neighbors_1hop("device:B") == {"email:A", "ip:C"}
+    assert gm.get_neighbors_2hop("device:B") == {"upi:D"}
+
+    # Non-existent node
+    assert gm.get_neighbors_1hop("email:NONEXISTENT") == set()
+    assert gm.get_neighbors_2hop("email:NONEXISTENT") == set()
+
+
+def test_get_merchant_nodes_and_stats(clean_graph_manager: GraphManager, sample_fingerprint_partial: dict):
+    """Verifies retrieval of merchant-scoped nodes, ego-subgraphs, and overall stats."""
+    gm = clean_graph_manager
+    merchant_1 = "merch-1"
+    merchant_2 = "merch-2"
+
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_partial,
+        merchant_id=merchant_1,
+        transaction_id="tx-part-1",
+        outcome="SUCCESS",
+        amount_paise=10000,
+    )
+
+    # 2 signals in sample_fingerprint_partial: email and ip
+    nodes_m1 = gm.get_merchant_nodes(merchant_1)
+    assert len(nodes_m1) == 2
+    assert len(gm.get_merchant_nodes(merchant_2)) == 0
+
+    stats = gm.stats()
+    assert stats["node_count"] == 2
+    assert stats["edge_count"] == 1
+    assert stats["ring_count"] == 0
+
+    # Subgraph and ego graph tests
+    subgraph = gm.get_subgraph(nodes_m1)
+    assert subgraph.number_of_nodes() == 2
+
+    ego = gm.get_ego_graph(nodes_m1[0], radius=1)
+    assert ego.number_of_nodes() == 2
+
+    # get_node tests
+    node_data = gm.get_node(nodes_m1[0])
+    assert node_data is not None
+    assert node_data["signal_type"] in ("email", "ip")
+    assert gm.get_node("email:nonexistent") is None
