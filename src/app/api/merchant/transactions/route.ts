@@ -34,7 +34,12 @@ export async function GET(req: NextRequest) {
       [merchantId]
     )
 
-    return NextResponse.json({ transactions: res.rows })
+    const transactions = res.rows.map((row: any) => ({
+      ...row,
+      trust_score: row.trust_score !== null && row.trust_score !== undefined ? Number(row.trust_score) : null,
+    }))
+
+    return NextResponse.json({ transactions })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
