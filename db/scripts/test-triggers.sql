@@ -20,7 +20,7 @@ INSERT INTO merchants (
   token_preview,
   maas_endpoint
 ) VALUES (
-  '00000000-0000-0000-0000-000000000001',
+  '88888888-8888-8888-8888-888888888888',
   'Trigger Test Merchant',
   'trigger-test@merchant.local',
   'rzp_test_trg',
@@ -28,7 +28,7 @@ INSERT INTO merchants (
   'test_wh_secret',
   '0000000000000000000000000000000000000000000000000000000000000001',
   'maas_live_0001',
-  '/api/maas/00000000-0000-0000-0000-000000000001/transact'
+  '/api/maas/88888888-8888-8888-8888-888888888888/transact'
 ) ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO transactions (
@@ -40,8 +40,8 @@ INSERT INTO transactions (
   amount_paise,
   status
 ) VALUES (
-  'a0000000-0000-0000-0000-000000000001',
-  '00000000-0000-0000-0000-000000000001',
+  '99999999-9999-9999-9999-999999999999',
+  '88888888-8888-8888-8888-888888888888',
   'Trigger test intent',
   '{"email_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "ip_subnet": "127.0.0.0/24"}'::jsonb,
   1,
@@ -63,8 +63,8 @@ INSERT INTO audit_entries (
   prev_entry_hash,
   entry_hash
 ) VALUES (
-  'e0000000-0000-0000-0000-000000000001',
-  'a0000000-0000-0000-0000-000000000001',
+  '77777777-7777-7777-7777-777777777771',
+  '99999999-9999-9999-9999-999999999999',
   'INTENT_RECEIVED',
   1,
   10,
@@ -73,7 +73,7 @@ INSERT INTO audit_entries (
   'Initial step recorded',
   false,
   'GENESIS',
-  encode(sha256('GENESIS|a0000000-0000-0000-0000-000000000001|1|INTENT_RECEIVED|Raw intent: Trigger test intent|Parsed intent: test item|Initial step recorded|false'::bytea), 'hex')
+  encode(sha256('GENESIS|99999999-9999-9999-9999-999999999999|1|INTENT_RECEIVED|Raw intent: Trigger test intent|Parsed intent: test item|Initial step recorded|false'::bytea), 'hex')
 );
 
 -- 3. Verify UPDATE is blocked
@@ -82,7 +82,7 @@ BEGIN
   BEGIN
     UPDATE audit_entries
     SET reason = 'Tampered reason'
-    WHERE id = 'e0000000-0000-0000-0000-000000000001';
+    WHERE id = '77777777-7777-7777-7777-777777777771';
 
     RAISE EXCEPTION 'UPDATE trigger failed: mutation was allowed on audit_entries';
   EXCEPTION
@@ -97,7 +97,7 @@ DO $$
 BEGIN
   BEGIN
     DELETE FROM audit_entries
-    WHERE id = 'e0000000-0000-0000-0000-000000000001';
+    WHERE id = '77777777-7777-7777-7777-777777777771';
 
     RAISE EXCEPTION 'DELETE trigger failed: deletion was allowed on audit_entries';
   EXCEPTION
@@ -115,10 +115,10 @@ DECLARE
 BEGIN
   SELECT entry_hash INTO v_prev_hash
   FROM audit_entries
-  WHERE id = 'e0000000-0000-0000-0000-000000000001';
+  WHERE id = '77777777-7777-7777-7777-777777777771';
 
   v_entry_hash := encode(sha256(
-    (v_prev_hash || '|a0000000-0000-0000-0000-000000000001|2|CATALOG_RESOLVED|Catalog lookup|Product resolved|Resolved matching product|false')::bytea
+    (v_prev_hash || '|99999999-9999-9999-9999-999999999999|2|CATALOG_RESOLVED|Catalog lookup|Product resolved|Resolved matching product|false')::bytea
   ), 'hex');
 
   INSERT INTO audit_entries (
@@ -134,8 +134,8 @@ BEGIN
     prev_entry_hash,
     entry_hash
   ) VALUES (
-    'e0000000-0000-0000-0000-000000000002',
-    'a0000000-0000-0000-0000-000000000001',
+    '77777777-7777-7777-7777-777777777772',
+    '99999999-9999-9999-9999-999999999999',
     'CATALOG_RESOLVED',
     2,
     15,
@@ -154,7 +154,7 @@ DO $$
 DECLARE
   v_is_valid BOOLEAN;
 BEGIN
-  SELECT verify_audit_chain('a0000000-0000-0000-0000-000000000001'::uuid) INTO v_is_valid;
+  SELECT verify_audit_chain('99999999-9999-9999-9999-999999999999'::uuid) INTO v_is_valid;
   IF NOT v_is_valid THEN
     RAISE EXCEPTION 'verify_audit_chain returned FALSE for a valid hash chain';
   END IF;
@@ -165,11 +165,11 @@ $$;
 -- 7. Cleanup test records
 -- Immutability trigger prevents DELETE on audit_entries, so disable trigger temporarily for cleanup
 ALTER TABLE audit_entries DISABLE TRIGGER trg_audit_entries_immutable;
-DELETE FROM audit_entries WHERE transaction_id = 'a0000000-0000-0000-0000-000000000001';
+DELETE FROM audit_entries WHERE transaction_id = '99999999-9999-9999-9999-999999999999';
 ALTER TABLE audit_entries ENABLE TRIGGER trg_audit_entries_immutable;
 
-DELETE FROM transactions WHERE id = 'a0000000-0000-0000-0000-000000000001';
-DELETE FROM merchants WHERE id = '00000000-0000-0000-0000-000000000001';
+DELETE FROM transactions WHERE id = '99999999-9999-9999-9999-999999999999';
+DELETE FROM merchants WHERE id = '88888888-8888-8888-8888-888888888888';
 
 COMMIT;
 
