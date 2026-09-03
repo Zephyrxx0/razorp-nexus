@@ -11,3 +11,4 @@ __pycache__/
 .system_generated/
 .next/
 next-env.d.ts
+.planning/*.lock
