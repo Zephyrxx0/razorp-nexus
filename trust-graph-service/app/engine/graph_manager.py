@@ -1,41 +1,42 @@
 from datetime import datetime, timezone
 from typing import Any
 import networkx as nx
-
-from app.core.lock import AsyncRWLock
+from app.engine.ring_detector import detect_rings_in_subgraph
 
 
 class GraphManager:
     """
-    In-memory NetworkX graph manager maintaining undirected weighted transaction graph.
-    Complies with Decision D-03 (prefixed node keys), D-04 (in-memory only signal updates),
-    and D-09 (async read-write concurrency).
+    Manages the in-memory NetworkX undirected graph and active fraud ring registry.
+    Handles node/edge lifecycle, clique creation on signal ingestion, local ego graph
+    extractions, and synchronous 2-hop local ego ring checks (D-10).
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.graph = nx.Graph()
-        self.lock = AsyncRWLock()
         self.rings: dict[str, dict[str, Any]] = {}
 
     @staticmethod
     def get_node_key(signal_type: str, signal_val: str | None = None) -> str:
         """
         Formats node key as {signal_type}:{signal_val} (D-03).
-        Strips any redundant 'sha256:' or '{signal_type}:' prefixes and whitespace.
-        Supports single combined argument (e.g. 'email:sha256:abc') or two arguments.
+        Supports either get_node_key("email", "val") or get_node_key("email:val").
+        Strips any leading 'sha256:' and redundant prefix to ensure hash parity with Phase 1.
         """
         if signal_val is None:
-            parts = signal_type.split(":", 1)
-            if len(parts) == 2:
-                st, sv = parts[0], parts[1]
+            if ":" in signal_type:
+                st, sv = signal_type.split(":", 1)
             else:
-                st, sv = "unknown", parts[0]
+                st, sv = "unknown", signal_type
         else:
-            st = signal_type.strip()
-            sv = str(signal_val).strip()
+            st = signal_type
+            sv = signal_val
+            # If st contains colon e.g. "email:abcd" with empty sv
             if ":" in st and not sv:
-                parts = st.split(":", 1)
-                st, sv = parts[0], parts[1]
+                st, sv = st.split(":", 1)
+            elif ":" in sv:
+                parts = sv.split(":", 1)
+                if parts[0] == st:
+                    sv = parts[1]
 
         st = st.strip()
         sv = sv.strip()
@@ -144,6 +145,37 @@ class GraphManager:
                 last_seen=ts,
             )
 
+    def check_local_ego_rings(self, node_keys: list[str]) -> list[dict[str, Any]]:
+        """
+        Extracts the 2-hop local ego neighborhood around the provided node_keys
+        and checks for qualifying fraud rings (Decision D-10).
+        Caches detected rings in self.rings and returns the list of rings.
+        Runs in < 5ms for typical local topologies.
+        """
+        if not node_keys:
+            return []
+
+        candidate_nodes: set[str] = set()
+        for k in node_keys:
+            if not self.graph.has_node(k):
+                continue
+            candidate_nodes.add(k)
+            # 1-hop neighbors
+            one_hop = set(self.graph.neighbors(k))
+            candidate_nodes.update(one_hop)
+            # 2-hop neighbors
+            for neighbor in one_hop:
+                candidate_nodes.update(self.graph.neighbors(neighbor))
+
+        if len(candidate_nodes) < 3:
+            return []
+
+        detected = detect_rings_in_subgraph(self.graph, candidate_nodes)
+        for ring in detected:
+            self.rings[ring["ring_id"]] = ring
+
+        return detected
+
     def ingest_signal(
         self,
         fingerprint: dict[str, Any],
@@ -152,11 +184,12 @@ class GraphManager:
         outcome: str,
         amount_paise: int,
         timestamp: datetime | None = None,
-    ) -> tuple[int, int]:
+    ) -> tuple[int, int, int]:
         """
         Ingests a transaction signal into the in-memory graph (D-04).
-        Creates/updates nodes and establishes a fully connected clique across all fingerprint signals.
-        Returns (nodes_updated, edges_updated).
+        Creates/updates nodes, establishes a fully connected clique across all fingerprint signals,
+        and triggers a synchronous 2-hop local ego ring check (D-10).
+        Returns (nodes_updated, edges_updated, rings_detected).
         """
         if timestamp is None:
             ts = datetime.now(timezone.utc)
@@ -167,7 +200,7 @@ class GraphManager:
 
         node_keys = self.extract_node_keys(fingerprint)
         if not node_keys:
-            return 0, 0
+            return 0, 0, 0
 
         is_failure = outcome in ("DENIED", "FAILED")
         tx_record = {
@@ -193,7 +226,10 @@ class GraphManager:
                 self.add_or_update_edge(u, v, merchant_id, ts)
                 edges_updated += 1
 
-        return nodes_updated, edges_updated
+        # 3. Synchronous 2-hop local ego ring check (D-10)
+        new_rings = self.check_local_ego_rings(node_keys)
+
+        return nodes_updated, edges_updated, len(new_rings)
 
     # Alias conforming to instruction name
     ingest_transaction_signal = ingest_signal

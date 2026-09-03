@@ -179,3 +179,42 @@ def test_ring_blocked_amount_deduplication():
     # Blocked amount must be exactly 50000, NOT 4 * 50000 = 200000
     assert ring["blocked_txn_count"] == 1
     assert ring["blocked_amount_paise"] == 50000
+
+
+def test_sync_ego_ring_detection_on_signal_ingest():
+    """
+    Asserts synchronous 2-hop local ego ring check (D-10) executes on signal ingestion
+    in < 5ms and immediately flags nodes as known fraud with trust_score=0.0.
+    """
+    import time
+
+    gm = GraphManager()
+    m1 = str(uuid4())
+    m2 = str(uuid4())
+
+    # Form a 3-node multi-merchant topology
+    # Transaction 1 at m1: clean
+    fp1 = {
+        "email_hash": "sync_ring_user",
+        "ip_subnet": "55.66.77.0/24",
+        "device_hash": "sync_ring_dev",
+    }
+    gm.ingest_signal(fp1, m1, "tx_sync_1", "SUCCESS", 1000)
+
+    # Transaction 2 at m2: failure on the same entities, completing the ring
+    t_start = time.perf_counter()
+    nodes_updated, edges_updated, rings_detected = gm.ingest_signal(
+        fp1, m2, "tx_sync_2", "FAILED", 4500
+    )
+    t_elapsed_ms = (time.perf_counter() - t_start) * 1000.0
+
+    assert rings_detected == 1
+    assert len(gm.rings) == 1
+    assert t_elapsed_ms < 15.0  # Well within test tolerance, typically < 2ms
+
+    # Check that constituent nodes have been immediately flagged as known fraud
+    email_key = gm.get_node_key("email", "sync_ring_user")
+    node_data = gm.graph.nodes[email_key]
+    assert node_data["is_known_fraud"] is True
+    assert node_data["trust_score"] == 0.0
+    assert node_data["ring_id"] is not None

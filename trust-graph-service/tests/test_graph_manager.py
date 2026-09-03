@@ -85,7 +85,7 @@ def test_ingest_signal_clique_creation(clean_graph_manager: GraphManager, sample
     merchant_id = "11111111-1111-1111-1111-111111111111"
     tx_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 
-    nodes_updated, edges_updated = gm.ingest_signal(
+    nodes_updated, edges_updated, _ = gm.ingest_signal(
         fingerprint=sample_fingerprint_clean,
         merchant_id=merchant_id,
         transaction_id=tx_id,
