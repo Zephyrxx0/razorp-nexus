@@ -59,11 +59,17 @@ Plans:
   4. Connected-components clustering detects multi-merchant fraud rings across entities spanning >= 2 merchants and exposes ring topologies via `GET /trust/rings`.
   5. `POST /trust/signal` updates edge weights in real time upon transaction outcomes, and the service rehydrates graph state from PostgreSQL on startup.
 
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
+**Wave 1**
 
-- [ ] 02-01: TBD
+- [ ] 02-01: Core Project Setup, In-Memory Graph Manager & Async Concurrency Locking (pyproject.toml, schemas.py, AsyncRWLock, GraphManager, test_graph_manager.py)
+- [ ] 02-02: Trust Scoring Engine & Connected Components Ring Detection (scoring.py, ring_detector.py, sync ego check, test_scoring.py, test_ring_detector.py)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-03: PostgreSQL Rehydration, Background Scheduler, Cytoscape Endpoints & FastAPI Microservice (rehydration.py, cytoscape.py, scheduler.py, routes_trust.py, main.py, test_rehydration.py, test_api.py)
 
 ### Phase 3: Google ADK Orchestrator & Tool Suite
 
