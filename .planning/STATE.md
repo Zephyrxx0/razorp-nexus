@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 current_phase: 05
 current_phase_name: Nyquist validated & verified
 status: ready
-stopped_at: Phase 5 context gathered
-last_updated: "2026-09-03T16:21:13.507Z"
+stopped_at: Phase 05 UI-SPEC approved
+last_updated: "2026-09-03T19:57:33.389Z"
 last_activity: 2026-09-03
 last_activity_desc: Phase 04 completed and verified
-state_head: 4ed55b9c959493d6722c0bfb80b4d1cee6cb5195
+state_head: dc46fe39d0e3d60b643b168509c17b57440d8e51
 progress:
   total_phases: 6
   completed_phases: 3
@@ -92,6 +92,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-03T16:21:13.429Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-merchant-dashboard-ui/05-CONTEXT.md
+Last session: 2026-09-03T19:57:33.226Z
+Stopped at: Phase 05 UI-SPEC approved
+Resume file: .planning/phases/05-merchant-dashboard-ui/05-UI-SPEC.md
