@@ -5,12 +5,18 @@
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
+      "@/*": ["./src/*"],
       "@nexus/db": ["./db/ts/src/index.ts"],
       "@nexus/db/*": ["./db/ts/src/*"]
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    ".next/types/**/*.ts",
+    "test/**/*"
+  ]
 }
 
