@@ -53,17 +53,17 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 ### Merchant Dashboard
 
-- [ ] **DASH-01**: Next.js 14 App Router dashboard with self-service onboarding wizard to connect Razorpay test credentials and generate MaaS endpoints.
-- [ ] **DASH-02**: Catalog management interface to view, add, edit, and toggle AI-purchasable products with stock indicators.
-- [ ] **DASH-03**: Real-time transactions feed with status badges (SUCCESS, DENIED, FAILED), trust score pill, and slide-out audit timeline drawer.
-- [ ] **DASH-04**: Interactive Cytoscape.js force-directed graph visualization rendering buyer signal nodes, co-occurrence edges, and highlighted fraud ring clusters.
+- [x] **DASH-01**: Next.js 14 App Router dashboard with self-service onboarding wizard to connect Razorpay test credentials and generate MaaS endpoints.
+- [x] **DASH-02**: Catalog management interface to view, add, edit, and toggle AI-purchasable products with stock indicators.
+- [x] **DASH-03**: Real-time transactions feed with status badges (SUCCESS, DENIED, FAILED), trust score pill, and slide-out audit timeline drawer.
+- [x] **DASH-04**: Interactive Cytoscape.js force-directed graph visualization rendering buyer signal nodes, co-occurrence edges, and highlighted fraud ring clusters.
 
 ### Evaluation & Benchmark Suite
 
-- [ ] **EVAL-01**: Synthetic benchmark dataset generator producing 500+ realistic multi-merchant transactions with known fraud ring injections.
-- [ ] **EVAL-02**: Evaluation harness (`scripts/run_eval.py`) measuring Precision (target ≥ 80%), Recall (target ≥ 75%), F1, and explicit ₹ False-Positive Cost on held-out test data.
-- [ ] **EVAL-03**: Autonomous Demo Buyer Agent (`DemoBuyerAgent`) built with Google ADK simulating end-to-end shopping without human UI intervention.
-- [ ] **EVAL-04**: End-to-end demo script demonstrating both happy path (ALLOW) and fraud ring attack denial (DENY) with complete audit trail inspection.
+- [x] **EVAL-01**: Synthetic benchmark dataset generator producing 500+ realistic multi-merchant transactions with known fraud ring injections.
+- [x] **EVAL-02**: Evaluation harness (`scripts/run_eval.py`) measuring Precision (target ≥ 80%), Recall (target ≥ 75%), F1, and explicit ₹ False-Positive Cost on held-out test data.
+- [x] **EVAL-03**: Autonomous Demo Buyer Agent (`DemoBuyerAgent`) built with Google ADK simulating end-to-end shopping without human UI intervention.
+- [x] **EVAL-04**: End-to-end demo script demonstrating both happy path (ALLOW) and fraud ring attack denial (DENY) with complete audit trail inspection.
 
 ## v2 Requirements
 
@@ -113,14 +113,14 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | AUDIT-01 | Phase 1 | Complete |
 | AUDIT-02 | Phase 1 | Complete |
 | AUDIT-03 | Phase 4 | Complete |
-| DASH-01 | Phase 5 | Pending |
-| DASH-02 | Phase 5 | Pending |
-| DASH-03 | Phase 5 | Pending |
-| DASH-04 | Phase 5 | Pending |
-| EVAL-01 | Phase 6 | Pending |
-| EVAL-02 | Phase 6 | Pending |
-| EVAL-03 | Phase 6 | Pending |
-| EVAL-04 | Phase 6 | Pending |
+| DASH-01 | Phase 5 | Complete |
+| DASH-02 | Phase 5 | Complete |
+| DASH-03 | Phase 5 | Complete |
+| DASH-04 | Phase 5 | Complete |
+| EVAL-01 | Phase 6 | Complete |
+| EVAL-02 | Phase 6 | Complete |
+| EVAL-03 | Phase 6 | Complete |
+| EVAL-04 | Phase 6 | Complete |
 
 **Coverage:**
 
