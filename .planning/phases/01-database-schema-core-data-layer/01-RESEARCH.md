@@ -412,34 +412,6 @@ Per user decisions **D-09**, **D-10**, and **D-11**, the database container boot
 - *Pitfall:* Converting rupee values via `float` (e.g. `price * 100`) leads to IEEE 754 precision issues (e.g., `19.99 * 100 = 1998.9999999999998`), causing off-by-one paise errors that fail Razorpay order creation.
 - *Mitigation:* PostgreSQL schema enforces `BIGINT` column types with `CHECK (price_paise > 0)` and `CHECK (amount_paise > 0)`. TypeScript interfaces use `price_paise: number` (safe up to $2^{53} - 1$ paise = ₹90 trillion) and Python models use `int`.
 
-## Validation Architecture
-
-### Test Framework
-| Property | Value |
-|----------|-------|
-| Framework | vitest (TypeScript) & pytest (Python) |
-| Config file | db/ts/vitest.config.ts & db/py/pyproject.toml |
-| Quick run command | `npm test --prefix db/ts && pytest db/py/tests/test_crypto.py -q` |
-| Full suite command | `npm test --prefix db/ts && pytest db/py -q` |
-
-### Phase Requirements -> Test Map
-| Req ID | Behavior | Test Type | Automated Command | File Exists? |
-|--------|----------|-----------|-------------------|-------------|
-| AUDIT-01 | PostgreSQL trigger blocks UPDATE and DELETE on audit_entries | integration | `npx tsx db/scripts/test-triggers.ts` | ❌ Wave 0 |
-| AUDIT-02 | Audit trail records millisecond timestamps, duration, steps, input/output summaries, reason, raw JSONB, and hash chain | unit | `npm test --prefix db/ts && pytest db/py/tests/test_crypto.py` | ❌ Wave 0 |
-| TRUST-05 | Transactions schema correctly stores normalized buyer fingerprints and rehydration seeds | integration | `npx tsx db/scripts/test-schema.ts` | ❌ Wave 0 |
-
-### Sampling Rate
-- **Per task commit:** `npm test --prefix db/ts && pytest db/py/tests/test_crypto.py -q`
-- **Per wave merge:** `npm test --prefix db/ts && pytest db/py -q`
-- **Phase gate:** Full test suite green before verification
-
-### Wave 0 Gaps
-- [ ] `db/fixtures/crypto-fixtures.json` — shared test vectors for cross-language crypto and audit hashing
-- [ ] `db/ts/test/crypto.test.ts` — TypeScript vitest suite
-- [ ] `db/py/tests/test_crypto.py` — Python pytest suite
-- [ ] `db/scripts/test-triggers.ts` — automated trigger immutability and audit chain test
-
 ---
 
 ## Verification & Testing Strategy
