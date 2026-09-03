@@ -110,6 +110,9 @@ EXECUTE FUNCTION prevent_audit_mutation();
 -- 6. Application Role & Revocations (Defense-in-Depth #2)
 DO $$
 BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'nexus') THEN
+    CREATE ROLE nexus WITH LOGIN PASSWORD 'nexus_dev_password' SUPERUSER;
+  END IF;
   IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'nexus_app') THEN
     CREATE ROLE nexus_app WITH LOGIN PASSWORD 'nexus_app_secret';
   END IF;
