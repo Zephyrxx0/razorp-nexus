@@ -129,16 +129,19 @@ async def log_audit_entry(
         entry_hash = compute_entry_hash(step_dict)
         step_dict["entry_hash"] = entry_hash
 
-        # Propagate hashes back to input step objects/dicts
+        # Propagate hashes and transaction_id back to input step objects/dicts
         if hasattr(step, "prev_entry_hash"):
             step.prev_entry_hash = prev_hash
         if hasattr(step, "entry_hash"):
             step.entry_hash = entry_hash
+        if hasattr(step, "transaction_id"):
+            step.transaction_id = tx_id_str
         if hasattr(step, "raw_data"):
             step.raw_data = sanitized_raw
         if isinstance(step, dict):
             step["prev_entry_hash"] = prev_hash
             step["entry_hash"] = entry_hash
+            step["transaction_id"] = tx_id_str
             step["raw_data"] = sanitized_raw
 
         prev_hash = entry_hash
