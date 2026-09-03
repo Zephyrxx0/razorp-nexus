@@ -143,11 +143,20 @@ Plans:
   4. Clicking any transaction opens a slide-out audit timeline drawer detailing every tool step, latency breakdown, and plain-English decision rationale.
   5. Merchant can view interactive Cytoscape.js force-directed graph visualizer rendering buyer nodes, co-occurrence edges, and highlighted multi-merchant fraud ring clusters.
 
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
+**Wave 1**
 
-- [ ] 05-01: TBD
+- [ ] 05-01: Dashboard Scaffolding, shadcn/ui Setup, Merchant Session & Onboarding Wizard (package.json, tailwind.config.ts, utils.ts, components/ui, merchant-provider.tsx, header.tsx, verify-keys, onboard)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02: Catalog Manager, Real-Time Transactions Feed & Audit Timeline Drawer (table, sheet, switch, dialog, catalog-modal, ai-agent-view, products route, transactions feed SWR, test-transact simulation, audit-drawer)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 05-03: Interactive Cytoscape.js Force-Directed Trust Graph Visualizer & FastAPI Proxy Layer (FastAPI proxy routes, cytoscape-graph, node-inspector-sheet, trust-graph page)
 
 ### Phase 6: Autonomous Demo Buyer & Evaluation Suite
 
