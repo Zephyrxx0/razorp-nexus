@@ -12,7 +12,7 @@ Nexus is a dual-track agentic commerce platform built for the Razorpay AI Builda
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Database Schema & Core Data Layer** - PostgreSQL 16, pgvector, AES-256 secret encryption, immutable audit schema & DB triggers (completed 2026-09-03)
-- [ ] **Phase 2: Trust Graph Engine Microservice** - FastAPI port 8001, in-memory NetworkX, 0-100 scoring, real-time signal feedback, connected components ring clustering
+- [x] **Phase 2: Trust Graph Engine Microservice** - FastAPI port 8001, in-memory NetworkX, 0-100 scoring, real-time signal feedback, connected components ring clustering (completed 2026-09-03)
 - [ ] **Phase 3: Google ADK Orchestrator & Tool Suite** - Google ADK port 8000, Gemini 2.0 Flash, 6-step tool pipeline, intent parser, catalog resolver, trust client, Razorpay order/payment tools, defense-in-depth trust gate
 - [ ] **Phase 4: MaaS Gateway & Webhook API Layer** - Next.js 14 route handlers, semantic catalog search via pgvector embeddings, Bearer token auth, transact endpoint proxy, HMAC-SHA256 webhook handler
 - [ ] **Phase 5: Merchant Dashboard UI** - Next.js 14 App Router, onboarding wizard, catalog editor, real-time transaction feed with expandable audit timeline drawer, Cytoscape.js force-directed graph visualizer
@@ -69,7 +69,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-03: PostgreSQL Rehydration, Background Scheduler, Cytoscape Endpoints & FastAPI Microservice (rehydration.py, cytoscape.py, scheduler.py, routes_trust.py, main.py, test_rehydration.py, test_api.py)
+- [x] 02-03: PostgreSQL Rehydration, Background Scheduler, Cytoscape Endpoints & FastAPI Microservice (rehydration.py, cytoscape.py, scheduler.py, routes_trust.py, main.py, test_rehydration.py, test_api.py)
 
 ### Phase 3: Google ADK Orchestrator & Tool Suite
 
@@ -158,7 +158,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Database Schema & Core Data Layer | 3/3 | Complete    | 2026-09-03 |
-| 2. Trust Graph Engine Microservice | 0/TBD | Not started | - |
+| 2. Trust Graph Engine Microservice | 3/3 | Complete    | 2026-09-03 |
 | 3. Google ADK Orchestrator & Tool Suite | 0/TBD | Not started | - |
 | 4. MaaS Gateway & Webhook API Layer | 0/TBD | Not started | - |
 | 5. Merchant Dashboard UI | 0/TBD | Not started | - |

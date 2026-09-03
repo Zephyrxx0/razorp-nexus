@@ -25,18 +25,18 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 ### Trust Graph Engine
 
-- [ ] **TRUST-01**: FastAPI microservice (port 8001) maintains an in-memory NetworkX undirected weighted graph connecting buyer signals (email hash, /24 IP subnet, device hash, UPI handle, user-agent hash).
-- [ ] **TRUST-02**: Trust engine scores incoming fingerprints via `POST /trust/score` returning a 0-100 score, decision (ALLOW ≥ 70, REVIEW 40-69, DENY < 40), risk factors, and score breakdown.
-- [ ] **TRUST-03**: Trust engine applies explicit scoring penalties: new entity (-10), 1-hop fraud neighbor (-80), velocity across merchants (-30), and known ring membership (-100).
-- [ ] **TRUST-04**: Completed and denied transactions feed back into graph via `POST /trust/signal` to update edge weights and node attributes in real time.
-- [ ] **TRUST-05**: Trust Graph rehydrates its in-memory state from PostgreSQL transactions table on service startup.
+- [x] **TRUST-01**: FastAPI microservice (port 8001) maintains an in-memory NetworkX undirected weighted graph connecting buyer signals (email hash, /24 IP subnet, device hash, UPI handle, user-agent hash).
+- [x] **TRUST-02**: Trust engine scores incoming fingerprints via `POST /trust/score` returning a 0-100 score, decision (ALLOW ≥ 70, REVIEW 40-69, DENY < 40), risk factors, and score breakdown.
+- [x] **TRUST-03**: Trust engine applies explicit scoring penalties: new entity (-10), 1-hop fraud neighbor (-80), velocity across merchants (-30), and known ring membership (-100).
+- [x] **TRUST-04**: Completed and denied transactions feed back into graph via `POST /trust/signal` to update edge weights and node attributes in real time.
+- [x] **TRUST-05**: Trust Graph rehydrates its in-memory state from PostgreSQL transactions table on service startup.
 
 ### Fraud Ring Detection & Risk Interception
 
-- [ ] **RING-01**: Graph engine detects multi-merchant fraud rings using connected components and community clustering algorithms across entities appearing at ≥2 merchants.
-- [ ] **RING-02**: Fraud rings expose metadata via `GET /trust/rings` including affected merchants, member nodes, blocked transaction count, and blocked rupee amount.
+- [x] **RING-01**: Graph engine detects multi-merchant fraud rings using connected components and community clustering algorithms across entities appearing at ≥2 merchants.
+- [x] **RING-02**: Fraud rings expose metadata via `GET /trust/rings` including affected merchants, member nodes, blocked transaction count, and blocked rupee amount.
 - [ ] **RING-03**: Programmatic defense-in-depth interceptor in `create_razorpay_order` raises `TrustViolationError` if called with trust score < 40.
-- [ ] **RING-04**: System operates strictly defense-only (passive observation, ring scoring, transaction rejection); no offensive probing or cross-merchant PII leakage.
+- [x] **RING-04**: System operates strictly defense-only (passive observation, ring scoring, transaction rejection); no offensive probing or cross-merchant PII leakage.
 
 ### Razorpay Integration & Webhooks
 
@@ -97,15 +97,15 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | ORCH-03 | Phase 3 | Pending |
 | ORCH-04 | Phase 3 | Pending |
 | ORCH-05 | Phase 3 | Pending |
-| TRUST-01 | Phase 2 | Pending |
-| TRUST-02 | Phase 2 | Pending |
-| TRUST-03 | Phase 2 | Pending |
-| TRUST-04 | Phase 2 | Pending |
-| TRUST-05 | Phase 2 | Pending |
-| RING-01 | Phase 2 | Pending |
-| RING-02 | Phase 2 | Pending |
+| TRUST-01 | Phase 2 | Complete |
+| TRUST-02 | Phase 2 | Complete |
+| TRUST-03 | Phase 2 | Complete |
+| TRUST-04 | Phase 2 | Complete |
+| TRUST-05 | Phase 2 | Complete |
+| RING-01 | Phase 2 | Complete |
+| RING-02 | Phase 2 | Complete |
 | RING-03 | Phase 3 | Pending |
-| RING-04 | Phase 2 | Pending |
+| RING-04 | Phase 2 | Complete |
 | RZP-01 | Phase 3 | Pending |
 | RZP-02 | Phase 3 | Pending |
 | RZP-03 | Phase 4 | Pending |
