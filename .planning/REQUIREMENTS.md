@@ -47,8 +47,8 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 ### Audit Trail & Explainability
 
-- [ ] **AUDIT-01**: PostgreSQL schema enforces immutable append-only audit entries (`AuditEntry`) via database triggers (disallowing UPDATE/DELETE).
-- [ ] **AUDIT-02**: Audit trail records timestamp (ms precision), duration, step name, input summary, output summary, and plain-English rationale for every tool decision.
+- [x] **AUDIT-01**: PostgreSQL schema enforces immutable append-only audit entries (`AuditEntry`) via database triggers (disallowing UPDATE/DELETE).
+- [x] **AUDIT-02**: Audit trail records timestamp (ms precision), duration, step name, input summary, output summary, and plain-English rationale for every tool decision.
 - [ ] **AUDIT-03**: 100% of transactions (success, denied, failed) produce a complete, sealed audit trail visible in dashboard and downloadable as JSON.
 
 ### Merchant Dashboard
@@ -110,8 +110,8 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | RZP-02 | Phase 3 | Pending |
 | RZP-03 | Phase 4 | Pending |
 | RZP-04 | Phase 4 | Pending |
-| AUDIT-01 | Phase 1 | Pending |
-| AUDIT-02 | Phase 1 | Pending |
+| AUDIT-01 | Phase 1 | Complete |
+| AUDIT-02 | Phase 1 | Complete |
 | AUDIT-03 | Phase 4 | Pending |
 | DASH-01 | Phase 5 | Pending |
 | DASH-02 | Phase 5 | Pending |
@@ -123,6 +123,7 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | EVAL-04 | Phase 6 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 33 total
 - Mapped to phases: 33
 - Unmapped: 0 ✓
@@ -130,4 +131,3 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 ---
 *Requirements defined: 2026-09-03*
 *Last updated: 2026-09-03 after initial definition*
-

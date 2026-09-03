@@ -11,7 +11,7 @@ Nexus is a dual-track agentic commerce platform built for the Razorpay AI Builda
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Database Schema & Core Data Layer** - PostgreSQL 16, pgvector, AES-256 secret encryption, immutable audit schema & DB triggers
+- [x] **Phase 1: Database Schema & Core Data Layer** - PostgreSQL 16, pgvector, AES-256 secret encryption, immutable audit schema & DB triggers (completed 2026-09-03)
 - [ ] **Phase 2: Trust Graph Engine Microservice** - FastAPI port 8001, in-memory NetworkX, 0-100 scoring, real-time signal feedback, connected components ring clustering
 - [ ] **Phase 3: Google ADK Orchestrator & Tool Suite** - Google ADK port 8000, Gemini 2.0 Flash, 6-step tool pipeline, intent parser, catalog resolver, trust client, Razorpay order/payment tools, defense-in-depth trust gate
 - [ ] **Phase 4: MaaS Gateway & Webhook API Layer** - Next.js 14 route handlers, semantic catalog search via pgvector embeddings, Bearer token auth, transact endpoint proxy, HMAC-SHA256 webhook handler
@@ -38,12 +38,12 @@ Nexus is a dual-track agentic commerce platform built for the Razorpay AI Builda
 Plans:
 **Wave 1**
 
-- [ ] 01-01: Database Infrastructure & Schema DDL (Docker Compose with pgvector:pg16, schema.sql with integer paise CHECK constraints, HNSW index, audit trigger + REVOKE immutability, verify_audit_chain function, test-triggers script)
-- [ ] 01-02: Cryptographic Utilities & Cross-Language Parity Suite (crypto-fixtures.json, TypeScript db/ts adapter + Vitest test, Python db/py adapter + Pytest test, verifying AES-256-GCM, PII hashing, and audit hash chaining)
+- [x] 01-01: Database Infrastructure & Schema DDL (Docker Compose with pgvector:pg16, schema.sql with integer paise CHECK constraints, HNSW index, audit trigger + REVOKE immutability, verify_audit_chain function, test-triggers script)
+- [x] 01-02: Cryptographic Utilities & Cross-Language Parity Suite (crypto-fixtures.json, TypeScript db/ts adapter + Vitest test, Python db/py adapter + Pytest test, verifying AES-256-GCM, PII hashing, and audit hash chaining)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-03: Seed Catalog, Precomputed Embeddings & Rehydration Data (seeds/01_merchants.sql, seeds/02_products.sql with 768d Gemini vectors, seeds/03_transactions.sql with historical rehydration data, scripts/generate_embeddings.py, end-to-end integration test)
+- [x] 01-03: Seed Catalog, Precomputed Embeddings & Rehydration Data (seeds/01_merchants.sql, seeds/02_products.sql with 768d Gemini vectors, seeds/03_transactions.sql with historical rehydration data, scripts/generate_embeddings.py, end-to-end integration test)
 
 ### Phase 2: Trust Graph Engine Microservice
 
@@ -151,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Database Schema & Core Data Layer | 0/TBD | Not started | - |
+| 1. Database Schema & Core Data Layer | 3/3 | Complete    | 2026-09-03 |
 | 2. Trust Graph Engine Microservice | 0/TBD | Not started | - |
 | 3. Google ADK Orchestrator & Tool Suite | 0/TBD | Not started | - |
 | 4. MaaS Gateway & Webhook API Layer | 0/TBD | Not started | - |
