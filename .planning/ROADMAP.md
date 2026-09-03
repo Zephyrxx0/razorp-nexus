@@ -156,7 +156,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 05-03: Interactive Cytoscape.js Force-Directed Trust Graph Visualizer & FastAPI Proxy Layer (FastAPI proxy routes, cytoscape-graph, node-inspector-sheet, trust-graph page)
+- [x] 05-03: Interactive Cytoscape.js Force-Directed Trust Graph Visualizer & FastAPI Proxy Layer (FastAPI proxy routes, cytoscape-graph, node-inspector-sheet, trust-graph page)
 
 ### Phase 6: Autonomous Demo Buyer & Evaluation Suite
 

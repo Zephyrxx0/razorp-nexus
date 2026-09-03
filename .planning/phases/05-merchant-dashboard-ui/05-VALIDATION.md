@@ -1,9 +1,9 @@
 ---
 phase: 5
 slug: merchant-dashboard-ui
-status: draft
+status: validated
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-09-04
 ---
 
@@ -38,15 +38,15 @@ created: 2026-09-04
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 05-01-01 | 01 | 1 | DASH-01 | T-05-01 | Tailwind & shadcn UI component library setup | unit | `npx vitest run test/ui-components.test.tsx` | ❌ W0 | ⬜ pending |
-| 05-01-02 | 01 | 1 | DASH-01 | T-05-02 | Key verification route validates rzp_test_* against Razorpay API | integration | `npx vitest run test/merchant-onboard.test.ts` | ❌ W0 | ⬜ pending |
-| 05-01-03 | 01 | 1 | DASH-01 | T-05-03 | Onboarding wizard creates merchant with AES-encrypted keys | integration | `npx vitest run test/merchant-onboard.test.ts` | ❌ W0 | ⬜ pending |
-| 05-02-01 | 02 | 2 | DASH-02 | T-05-04 | Catalog API supports integer paise, stock stepper, and AI toggle | unit | `npx vitest run test/merchant-catalog.test.ts` | ❌ W0 | ⬜ pending |
-| 05-02-02 | 02 | 2 | DASH-02 | T-05-05 | Product save synchronizes Gemini vector embeddings into pgvector | integration | `npx vitest run test/merchant-catalog.test.ts` | ❌ W0 | ⬜ pending |
-| 05-02-03 | 02 | 2 | DASH-03 | T-05-06 | SWR transactions query delivers status badges and trust score pills | integration | `npx vitest run test/merchant-transactions.test.ts` | ❌ W0 | ⬜ pending |
-| 05-02-04 | 02 | 2 | DASH-03 | T-05-07 | Slide-out audit drawer renders 6-step timeline and hash shield | component | `npx vitest run test/audit-drawer.test.tsx` | ❌ W0 | ⬜ pending |
-| 05-03-01 | 03 | 3 | DASH-04 | T-05-08 | Trust graph Next.js API route proxies to FastAPI port 8001 | integration | `npx vitest run test/trust-proxy.test.ts` | ❌ W0 | ⬜ pending |
-| 05-03-02 | 03 | 3 | DASH-04 | T-05-09 | Cytoscape visualizer component mounts with CoSE layout and ring filter | component | `npx vitest run test/trust-graph.test.tsx` | ❌ W0 | ⬜ pending |
+| 05-01-01 | 01 | 1 | DASH-01 | T-05-01 | Tailwind & shadcn UI component library setup | unit | `npx vitest run test/ui-components.test.tsx` | ✅ | ✅ green |
+| 05-01-02 | 01 | 1 | DASH-01 | T-05-02 | Key verification route validates rzp_test_* against Razorpay API | integration | `npx vitest run test/merchant-onboard.test.ts` | ✅ | ✅ green |
+| 05-01-03 | 01 | 1 | DASH-01 | T-05-03 | Onboarding wizard creates merchant with AES-encrypted keys | integration | `npx vitest run test/merchant-onboard.test.ts` | ✅ | ✅ green |
+| 05-02-01 | 02 | 2 | DASH-02 | T-05-04 | Catalog API supports integer paise, stock stepper, and AI toggle | unit | `npx vitest run test/merchant-catalog.test.ts` | ✅ | ✅ green |
+| 05-02-02 | 02 | 2 | DASH-02 | T-05-05 | Product save synchronizes Gemini vector embeddings into pgvector | integration | `npx vitest run test/merchant-catalog.test.ts` | ✅ | ✅ green |
+| 05-02-03 | 02 | 2 | DASH-03 | T-05-06 | SWR transactions query delivers status badges and trust score pills | integration | `npx vitest run test/merchant-transactions.test.ts` | ✅ | ✅ green |
+| 05-02-04 | 02 | 2 | DASH-03 | T-05-07 | Slide-out audit drawer renders 6-step timeline and hash shield | component | `npx vitest run test/audit-drawer.test.tsx` | ✅ | ✅ green |
+| 05-03-01 | 03 | 3 | DASH-04 | T-05-08 | Trust graph Next.js API route proxies to FastAPI port 8001 | integration | `npx vitest run test/trust-proxy.test.ts` | ✅ | ✅ green |
+| 05-03-02 | 03 | 3 | DASH-04 | T-05-09 | Cytoscape visualizer component mounts with CoSE layout and ring filter | component | `npx vitest run test/trust-graph.test.tsx` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -54,12 +54,12 @@ created: 2026-09-04
 
 ## Wave 0 Requirements
 
-- [ ] `test/ui-components.test.tsx` — stubs for shadcn UI components rendering
-- [ ] `test/merchant-onboard.test.ts` — stubs for DASH-01 key verification and onboarding
-- [ ] `test/merchant-catalog.test.ts` — stubs for DASH-02 catalog CRUD and embedding sync
-- [ ] `test/merchant-transactions.test.ts` — stubs for DASH-03 transaction feed and SWR query
-- [ ] `test/audit-drawer.test.tsx` — stubs for DASH-03 audit timeline drawer component
-- [ ] `test/trust-proxy.test.ts` — stubs for DASH-04 Trust Graph proxy routes
+- [x] `test/ui-components.test.tsx` — stubs for shadcn UI components rendering
+- [x] `test/merchant-onboard.test.ts` — stubs for DASH-01 key verification and onboarding
+- [x] `test/merchant-catalog.test.ts` — stubs for DASH-02 catalog CRUD and embedding sync
+- [x] `test/merchant-transactions.test.ts` — stubs for DASH-03 transaction feed and SWR query
+- [x] `test/audit-drawer.test.tsx` — stubs for DASH-03 audit timeline drawer component
+- [x] `test/trust-proxy.test.ts` — stubs for DASH-04 Trust Graph proxy routes
 
 ---
 
