@@ -1,0 +1,176 @@
+{
+  "encryption_vectors": [
+    {
+      "key_hex": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "iv_hex": "fedcba9876543210fedcba98",
+      "plaintext": "sec_test_abc123!@#",
+      "encrypted": "fedcba9876543210fedcba98:d9f4dddfa1840f9eaab431a4b163e980:a1ca28fd4b32103012f746755470fedcd521"
+    },
+    {
+      "key_hex": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+      "iv_hex": "1234567890abcdef12345678",
+      "plaintext": "rzp_test_secret_live_XYZ9876543210",
+      "encrypted": "1234567890abcdef12345678:f69a9225537e9e4e563f7acfedbd90a8:59e5d094fa08c72ed6714c282fee50d6ae374e3092939ce975e5d3589fed5f603c59"
+    },
+    {
+      "key_hex": "ffffffffffffffffffffffffffffffff00000000000000001111111111111111",
+      "iv_hex": "aabbccddeeff001122334455",
+      "plaintext": "webhook_secret_whsec_k98h7g6f5e4d3c2b1a",
+      "encrypted": "aabbccddeeff001122334455:462afa0c7503bca9c3be4d862399c605:bb7ed3e0c1688bedafd793513261c1193027a808db745dd8930b04d0d030c7ed8d8e7da877150b"
+    }
+  ],
+  "signal_normalization_vectors": {
+    "emails": [
+      {
+        "raw": "  Buyer.Name+Filter@Gmail.COM  ",
+        "normalized": "buyer.name+filter@gmail.com",
+        "hash": "72c822f1b0d27f8b510efe913f7d10a1806fcea8f29526ab3ed567795b62b65f"
+      },
+      {
+        "raw": "TEST@example.com",
+        "normalized": "test@example.com",
+        "hash": "973dfe463ec85785f5f95af5ba3906eedb2d931c24e69824a89ea65dba4e813b"
+      },
+      {
+        "raw": "   user@SUB.DOMAIN.ORG   ",
+        "normalized": "user@sub.domain.org",
+        "hash": "4fd71f27b3878671371c5e8390b92d143a85b73355de90bcd467e1053c2848c3"
+      },
+      {
+        "raw": "already.normalized@domain.com",
+        "normalized": "already.normalized@domain.com",
+        "hash": "2080e068ab9c0a1aa3ba428b46e840f6de81b4823b6a89755f563a30868abd50"
+      },
+      {
+        "raw": "  agent.42+commerce@nexus.ai  ",
+        "normalized": "agent.42+commerce@nexus.ai",
+        "hash": "16241892d2966b9dd3a2726e243aced7b5a00ecd1679600a718861278f42d76f"
+      },
+      {
+        "raw": "buyer123@HDFC.BANK   ",
+        "normalized": "buyer123@hdfc.bank",
+        "hash": "53ddca7a960b0cd50edcac00fffd2da88c35cd321a8279e4e4625ee4729122ea"
+      }
+    ],
+    "ip_subnets": [
+      {
+        "raw": "192.168.1.42",
+        "normalized": "192.168.1.0/24"
+      },
+      {
+        "raw": "10.0.5.0/24",
+        "normalized": "10.0.5.0/24"
+      },
+      {
+        "raw": "  172.16.254.1  ",
+        "normalized": "172.16.254.0/24"
+      },
+      {
+        "raw": "103.21.44.132",
+        "normalized": "103.21.44.0/24"
+      },
+      {
+        "raw": "192.168.0.0/24",
+        "normalized": "192.168.0.0/24"
+      },
+      {
+        "raw": "8.8.8.8",
+        "normalized": "8.8.8.0/24"
+      }
+    ],
+    "user_agents": [
+      {
+        "raw": "  Mozilla/5.0   (Windows NT 10.0;  Win64; x64)  ",
+        "normalized": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "hash": "3fa8744a931aea01914a25ce23a981a68d911e8ab14dd59ffda2d3bf9d613db5"
+      },
+      {
+        "raw": "NexusDemoBuyer/1.0",
+        "normalized": "NexusDemoBuyer/1.0",
+        "hash": "53caed942269bbb83cee3e7cc7471adc2cd4a82432a6f918287f1edc6b57f06c"
+      },
+      {
+        "raw": "  Mozilla/5.0 \t (Macintosh;  Intel Mac OS X)   AppleWebKit/537.36 \n ",
+        "normalized": "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36",
+        "hash": "d60d31ad508e8d3d9169822a83b7a9dd76cb0078b12e6b754e31a36d6b97ae47"
+      },
+      {
+        "raw": " Python-requests/2.31.0 ",
+        "normalized": "Python-requests/2.31.0",
+        "hash": "4ba4d1db2b150881570bd4f752fba01044f71c3951cc724125dba89cfd892bcb"
+      }
+    ],
+    "device_ids": [
+      {
+        "raw": "  A3F8B2C1-D4E5-4A6B-9C8D-1E2F3A4B5C6D  ",
+        "normalized": "a3f8b2c1-d4e5-4a6b-9c8d-1e2f3a4b5c6d",
+        "hash": "ac3e9790ced5984dd09c4f18d2dbcb563023ac6d7d3bac59dd27ed6fb147d682"
+      },
+      {
+        "raw": "device_android_xyz987",
+        "normalized": "device_android_xyz987",
+        "hash": "72525cb27042e14aa00724bf6890add7a1121873e35235b2dd01cdc98afa8caa"
+      },
+      {
+        "raw": "  DEV-9988-aabb-CCDD  ",
+        "normalized": "dev-9988-aabb-ccdd",
+        "hash": "b5dbe4c771037be3164b9fe6b393d459ff5f0fc5c0b5cfbb54f1462fc563d4c5"
+      }
+    ]
+  },
+  "maas_token_vectors": [
+    {
+      "token": "maas_live_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hash": "2d55760d323519beca4c779dfaa7a426970ab3f4597cb3a085f4c4650ad1f241",
+      "preview": "maas_live_e3b0...b855"
+    },
+    {
+      "token": "maas_live_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "hash": "1f40559f42bd7f6b6d36ccd2bd885905086e0d3736d611506a066e45fe9bb01b",
+      "preview": "maas_live_0123...cdef"
+    },
+    {
+      "token": "maas_live_deadbeefdeadbeefcafebabecafebabe1234567812345678abcdef01abcdef01",
+      "hash": "d67d598ca6ac33ab7bb4dcaae453b2be4f0412a9c6766351b9ea448c1817be8e",
+      "preview": "maas_live_dead...ef01"
+    }
+  ],
+  "audit_chain_vectors": [
+    {
+      "step_number": 1,
+      "step_name": "INTENT_RECEIVED",
+      "prev_entry_hash": "GENESIS",
+      "transaction_id": "11111111-2222-3333-4444-555555555555",
+      "input_summary": "Received intent: 'Buy 2 units of Sony wireless headphones'",
+      "output_summary": "Intent accepted for processing",
+      "reason": "Transaction initiated by agent demo-buyer-001",
+      "is_error": false,
+      "canonical_preimage": "GENESIS|11111111-2222-3333-4444-555555555555|1|INTENT_RECEIVED|Received intent: 'Buy 2 units of Sony wireless headphones'|Intent accepted for processing|Transaction initiated by agent demo-buyer-001|false",
+      "entry_hash": "43c0b8267df2342c2cab218dbf70725477d396e9cac813c7528c4d0a95032d69"
+    },
+    {
+      "step_number": 2,
+      "step_name": "CATALOG_RESOLVED",
+      "transaction_id": "11111111-2222-3333-4444-555555555555",
+      "input_summary": "Query: wireless headphones, quantity: 2",
+      "output_summary": "Matched product: Sony WH-1000XM5 (match_score: 0.94). Stock: 12 -> 10.",
+      "reason": "Semantic similarity match. Stock sufficient for quantity 2.",
+      "is_error": false,
+      "prev_entry_hash": "43c0b8267df2342c2cab218dbf70725477d396e9cac813c7528c4d0a95032d69",
+      "canonical_preimage": "43c0b8267df2342c2cab218dbf70725477d396e9cac813c7528c4d0a95032d69|11111111-2222-3333-4444-555555555555|2|CATALOG_RESOLVED|Query: wireless headphones, quantity: 2|Matched product: Sony WH-1000XM5 (match_score: 0.94). Stock: 12 -> 10.|Semantic similarity match. Stock sufficient for quantity 2.|false",
+      "entry_hash": "e47a13c80b45e1d45d3682cf1a7cdc8a7362f04fbb57478094c6129ce4dada8c"
+    },
+    {
+      "step_number": 3,
+      "step_name": "TRUST_CHECKED",
+      "transaction_id": "11111111-2222-3333-4444-555555555555",
+      "input_summary": "Buyer fingerprint evaluated: score 87, decision ALLOW",
+      "output_summary": "Trust score: 87.00, decision: ALLOW",
+      "reason": "Legitimate buyer history with zero fraud risk factors",
+      "is_error": false,
+      "prev_entry_hash": "e47a13c80b45e1d45d3682cf1a7cdc8a7362f04fbb57478094c6129ce4dada8c",
+      "canonical_preimage": "e47a13c80b45e1d45d3682cf1a7cdc8a7362f04fbb57478094c6129ce4dada8c|11111111-2222-3333-4444-555555555555|3|TRUST_CHECKED|Buyer fingerprint evaluated: score 87, decision ALLOW|Trust score: 87.00, decision: ALLOW|Legitimate buyer history with zero fraud risk factors|false",
+      "entry_hash": "30301633036cd43b90df2e2f8855c18141addf9548aa776cc3b914bdeffeaa03"
+    }
+  ]
+}
