@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from typing import Any
 import networkx as nx
+from app.core.lock import AsyncRWLock
 from app.engine.ring_detector import detect_rings_in_subgraph
 
 
@@ -11,9 +12,10 @@ class GraphManager:
     extractions, and synchronous 2-hop local ego ring checks (D-10).
     """
 
-    def __init__(self):
+    def __init__(self, lock: AsyncRWLock | None = None):
         self.graph = nx.Graph()
         self.rings: dict[str, dict[str, Any]] = {}
+        self.lock = lock if lock is not None else AsyncRWLock()
 
     @staticmethod
     def get_node_key(signal_type: str, signal_val: str | None = None) -> str:
