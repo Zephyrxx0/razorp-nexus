@@ -17,11 +17,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 ### Agent Orchestration (Google ADK)
 
-- [ ] **ORCH-01**: Nexus Orchestrator Agent runs on Google ADK (`adk api_server` on port 8000) powered by Gemini 2.0 Flash with sub-2s tool-calling latency.
-- [ ] **ORCH-02**: Agent executes strict 6-step deterministic pipeline: `parse_intent` → `resolve_catalog` → `check_trust_graph` → `create_razorpay_order` → `capture_razorpay_payment` → `log_audit_entry`.
-- [ ] **ORCH-03**: Agent extracts structured `product_query`, integer `quantity`, and `buyer_email` from freeform intent via `parse_intent`.
-- [ ] **ORCH-04**: Agent validates inventory and decrements stock on successful transaction via `resolve_catalog` (halts on insufficient stock).
-- [ ] **ORCH-05**: Agent halts immediately on trust denial (score < 40) without invoking Razorpay API endpoints.
+- [x] **ORCH-01**: Nexus Orchestrator Agent runs on Google ADK (`adk api_server` on port 8000) powered by Gemini 2.0 Flash with sub-2s tool-calling latency.
+- [x] **ORCH-02**: Agent executes strict 6-step deterministic pipeline: `parse_intent` → `resolve_catalog` → `check_trust_graph` → `create_razorpay_order` → `capture_razorpay_payment` → `log_audit_entry`.
+- [x] **ORCH-03**: Agent extracts structured `product_query`, integer `quantity`, and `buyer_email` from freeform intent via `parse_intent`.
+- [x] **ORCH-04**: Agent validates inventory and decrements stock on successful transaction via `resolve_catalog` (halts on insufficient stock).
+- [x] **ORCH-05**: Agent halts immediately on trust denial (score < 40) without invoking Razorpay API endpoints.
 
 ### Trust Graph Engine
 
@@ -35,13 +35,13 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 - [x] **RING-01**: Graph engine detects multi-merchant fraud rings using connected components and community clustering algorithms across entities appearing at ≥2 merchants.
 - [x] **RING-02**: Fraud rings expose metadata via `GET /trust/rings` including affected merchants, member nodes, blocked transaction count, and blocked rupee amount.
-- [ ] **RING-03**: Programmatic defense-in-depth interceptor in `create_razorpay_order` raises `TrustViolationError` if called with trust score < 40.
+- [x] **RING-03**: Programmatic defense-in-depth interceptor in `create_razorpay_order` raises `TrustViolationError` if called with trust score < 40.
 - [x] **RING-04**: System operates strictly defense-only (passive observation, ring scoring, transaction rejection); no offensive probing or cross-merchant PII leakage.
 
 ### Razorpay Integration & Webhooks
 
-- [ ] **RZP-01**: Order tool creates Razorpay test-mode orders using merchant credentials with amount in integer paise and audit notes attached.
-- [ ] **RZP-02**: Payment tool captures payments against created orders in test mode and records `razorpay_payment_id`.
+- [x] **RZP-01**: Order tool creates Razorpay test-mode orders using merchant credentials with amount in integer paise and audit notes attached.
+- [x] **RZP-02**: Payment tool captures payments against created orders in test mode and records `razorpay_payment_id`.
 - [ ] **RZP-03**: Webhook endpoint (`POST /api/webhooks/razorpay`) verifies `X-Razorpay-Signature` header with timing-safe HMAC-SHA256 comparison.
 - [ ] **RZP-04**: Webhook handler processes `payment.captured`, `payment.failed`, and `order.paid` events to update transaction statuses and feed graph signals.
 
@@ -92,11 +92,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | MAAS-03 | Phase 4 | Pending |
 | MAAS-04 | Phase 4 | Pending |
 | MAAS-05 | Phase 4 | Pending |
-| ORCH-01 | Phase 3 | Pending |
-| ORCH-02 | Phase 3 | Pending |
-| ORCH-03 | Phase 3 | Pending |
-| ORCH-04 | Phase 3 | Pending |
-| ORCH-05 | Phase 3 | Pending |
+| ORCH-01 | Phase 3 | Complete |
+| ORCH-02 | Phase 3 | Complete |
+| ORCH-03 | Phase 3 | Complete |
+| ORCH-04 | Phase 3 | Complete |
+| ORCH-05 | Phase 3 | Complete |
 | TRUST-01 | Phase 2 | Complete |
 | TRUST-02 | Phase 2 | Complete |
 | TRUST-03 | Phase 2 | Complete |
@@ -104,10 +104,10 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | TRUST-05 | Phase 2 | Complete |
 | RING-01 | Phase 2 | Complete |
 | RING-02 | Phase 2 | Complete |
-| RING-03 | Phase 3 | Pending |
+| RING-03 | Phase 3 | Complete |
 | RING-04 | Phase 2 | Complete |
-| RZP-01 | Phase 3 | Pending |
-| RZP-02 | Phase 3 | Pending |
+| RZP-01 | Phase 3 | Complete |
+| RZP-02 | Phase 3 | Complete |
 | RZP-03 | Phase 4 | Pending |
 | RZP-04 | Phase 4 | Pending |
 | AUDIT-01 | Phase 1 | Complete |

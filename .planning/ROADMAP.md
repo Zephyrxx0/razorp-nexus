@@ -13,7 +13,7 @@ Nexus is a dual-track agentic commerce platform built for the Razorpay AI Builda
 
 - [x] **Phase 1: Database Schema & Core Data Layer** - PostgreSQL 16, pgvector, AES-256 secret encryption, immutable audit schema & DB triggers (completed 2026-09-03)
 - [x] **Phase 2: Trust Graph Engine Microservice** - FastAPI port 8001, in-memory NetworkX, 0-100 scoring, real-time signal feedback, connected components ring clustering (completed 2026-09-03)
-- [ ] **Phase 3: Google ADK Orchestrator & Tool Suite** - Google ADK port 8000, Gemini 2.0 Flash, 6-step tool pipeline, intent parser, catalog resolver, trust client, Razorpay order/payment tools, defense-in-depth trust gate
+- [x] **Phase 3: Google ADK Orchestrator & Tool Suite** - Google ADK port 8000, Gemini 2.0 Flash, 6-step tool pipeline, intent parser, catalog resolver, trust client, Razorpay order/payment tools, defense-in-depth trust gate (completed 2026-09-03)
 - [ ] **Phase 4: MaaS Gateway & Webhook API Layer** - Next.js 14 route handlers, semantic catalog search via pgvector embeddings, Bearer token auth, transact endpoint proxy, HMAC-SHA256 webhook handler
 - [ ] **Phase 5: Merchant Dashboard UI** - Next.js 14 App Router, onboarding wizard, catalog editor, real-time transaction feed with expandable audit timeline drawer, Cytoscape.js force-directed graph visualizer
 - [ ] **Phase 6: Autonomous Demo Buyer & Evaluation Suite** - Google ADK DemoBuyerAgent, multi-merchant ring attack simulation, 500-txn benchmark evaluation script computing Precision, Recall, F1, and explicit ₹ False-Positive Cost
@@ -90,15 +90,15 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01: Core Project Scaffolding, Models, Dual-Mode Razorpay Adapter & Intent Parser (pyproject.toml, config.py, exceptions.py, MockRazorpayClient, RazorpayClientAdapter, parse_intent with Gemini 2.0 Flash + regex fallback)
+- [x] 03-01: Core Project Scaffolding, Models, Dual-Mode Razorpay Adapter & Intent Parser (pyproject.toml, config.py, exceptions.py, MockRazorpayClient, RazorpayClientAdapter, parse_intent with Gemini 2.0 Flash + regex fallback)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02: Catalog Resolver with Atomic Decrement/Rollback, Trust Client, & Defense-in-Depth Razorpay Tools (resolve_catalog with atomic SQL decrement and compensatory rollback, check_trust_graph with 500ms timeout soft-fail, create_razorpay_order with RING-03 gate, capture_razorpay_payment)
+- [x] 03-02: Catalog Resolver with Atomic Decrement/Rollback, Trust Client, & Defense-in-Depth Razorpay Tools (resolve_catalog with atomic SQL decrement and compensatory rollback, check_trust_graph with 500ms timeout soft-fail, create_razorpay_order with RING-03 gate, capture_razorpay_payment)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03-03: Deterministic Pipeline State Machine Runner, Hash-Chained Audit Logging & ADK Port 8000 API Server (DeterministicPipelineRunner 1->2->3->4->5->6 state machine, log_audit_entry with PostgreSQL hash chain sync, ADK root_agent, FastAPI port 8000 POST /run)
+- [x] 03-03: Deterministic Pipeline State Machine Runner, Hash-Chained Audit Logging & ADK Port 8000 API Server (DeterministicPipelineRunner 1->2->3->4->5->6 state machine, log_audit_entry with PostgreSQL hash chain sync, ADK root_agent, FastAPI port 8000 POST /run)
 
 ### Phase 4: MaaS Gateway & Webhook API Layer
 
@@ -168,7 +168,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Database Schema & Core Data Layer | 3/3 | Complete    | 2026-09-03 |
 | 2. Trust Graph Engine Microservice | 3/3 | Complete    | 2026-09-03 |
-| 3. Google ADK Orchestrator & Tool Suite | 0/3 | Not started | - |
+| 3. Google ADK Orchestrator & Tool Suite | 3/3 | Complete    | 2026-09-03 |
 | 4. MaaS Gateway & Webhook API Layer | 0/TBD | Not started | - |
 | 5. Merchant Dashboard UI | 0/TBD | Not started | - |
 | 6. Autonomous Demo Buyer & Evaluation Suite | 0/TBD | Not started | - |
