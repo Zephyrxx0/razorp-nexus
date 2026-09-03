@@ -14,7 +14,7 @@ Nexus is a dual-track agentic commerce platform built for the Razorpay AI Builda
 - [x] **Phase 1: Database Schema & Core Data Layer** - PostgreSQL 16, pgvector, AES-256 secret encryption, immutable audit schema & DB triggers (completed 2026-09-03)
 - [x] **Phase 2: Trust Graph Engine Microservice** - FastAPI port 8001, in-memory NetworkX, 0-100 scoring, real-time signal feedback, connected components ring clustering (completed 2026-09-03)
 - [x] **Phase 3: Google ADK Orchestrator & Tool Suite** - Google ADK port 8000, Gemini 2.0 Flash, 6-step tool pipeline, intent parser, catalog resolver, trust client, Razorpay order/payment tools, defense-in-depth trust gate (completed 2026-09-03)
-- [ ] **Phase 4: MaaS Gateway & Webhook API Layer** - Next.js 14 route handlers, semantic catalog search via pgvector embeddings, Bearer token auth, transact endpoint proxy, HMAC-SHA256 webhook handler
+- [x] **Phase 4: MaaS Gateway & Webhook API Layer** - Next.js 14 route handlers, semantic catalog search via pgvector embeddings, Bearer token auth, transact endpoint proxy, HMAC-SHA256 webhook handler (completed 2026-09-03)
 - [ ] **Phase 5: Merchant Dashboard UI** - Next.js 14 App Router, onboarding wizard, catalog editor, real-time transaction feed with expandable audit timeline drawer, Cytoscape.js force-directed graph visualizer
 - [ ] **Phase 6: Autonomous Demo Buyer & Evaluation Suite** - Google ADK DemoBuyerAgent, multi-merchant ring attack simulation, 500-txn benchmark evaluation script computing Precision, Recall, F1, and explicit ₹ False-Positive Cost
 
