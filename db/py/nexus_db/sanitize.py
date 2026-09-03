@@ -8,7 +8,7 @@ from .crypto import (
 )
 
 SECRET_KEY_PATTERN = re.compile(
-    r"^(key_secret|razorpay_key_secret|secret|password|authorization|private_key|api_key)$",
+    r"^(key_secret|razorpay_key_secret|secret|password|authorization|private_key|api_key|credit_card|card_number|cvv|cvc)$",
     re.IGNORECASE,
 )
 SAFE_TOKEN_PATTERN = re.compile(r"(_hash|_preview)$", re.IGNORECASE)
@@ -19,6 +19,7 @@ DEVICE_KEY_PATTERN = re.compile(r"device_id|deviceid", re.IGNORECASE)
 
 IP_VALUE_PATTERN = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
 EMAIL_VALUE_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+CARD_VALUE_PATTERN = re.compile(r"^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{4}$")
 
 
 def sanitize_audit_data(data: Any) -> Any:
@@ -85,6 +86,11 @@ def sanitize_audit_data(data: Any) -> Any:
             # 6. Device ID sanitization
             if DEVICE_KEY_PATTERN.search(key) and not SAFE_TOKEN_PATTERN.search(key):
                 sanitized[key] = hash_device_id(value)
+                continue
+
+            # 7. Card pattern sanitization
+            if CARD_VALUE_PATTERN.match(value.strip()):
+                sanitized[key] = "[REDACTED]"
                 continue
 
         sanitized[key] = value
