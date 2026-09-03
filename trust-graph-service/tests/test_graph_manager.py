@@ -250,3 +250,107 @@ def test_get_merchant_nodes_and_stats(clean_graph_manager: GraphManager, sample_
     assert node_data is not None
     assert node_data["signal_type"] in ("email", "ip")
     assert gm.get_node("email:nonexistent") is None
+
+
+def test_cytoscape_node_and_edge_serialization(sample_fingerprint_clean):
+    """Verifies that serialize_node_to_cytoscape and serialize_edge_to_cytoscape format attributes correctly."""
+    gm = GraphManager()
+    merchant_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=merchant_id,
+        transaction_id="tx-cyto-1",
+        outcome="FAILED",
+        amount_paise=15000,
+    )
+
+    email_hash = sample_fingerprint_clean["email_hash"]
+    node_key = f"email:{email_hash}"
+    node_cy = gm.serialize_node_to_cytoscape(node_key)
+    assert node_cy["data"]["id"] == node_key
+    assert node_cy["data"]["signal_type"] == "email"
+    assert node_cy["data"]["signal_value"] == email_hash
+    assert "..." in node_cy["data"]["label"]
+    assert node_cy["data"]["merchants_count"] == 1
+    assert node_cy["data"]["failed_transaction_count"] == 1
+
+    edge_cy = gm.serialize_edge_to_cytoscape(node_key, "ip:192.168.1.0/24")
+    assert edge_cy["data"]["source"] == node_key
+    assert edge_cy["data"]["target"] == "ip:192.168.1.0/24"
+    assert edge_cy["data"]["weight"] == 1.0
+    assert edge_cy["data"]["merchants_shared"] == [merchant_id]
+
+
+def test_cytoscape_get_merchant_subgraph_and_limit(sample_fingerprint_clean):
+    """Verifies get_merchant_subgraph applies merchant filter and limits node count (D-15)."""
+    from app.models.cytoscape import CytoscapeGraph
+
+    gm = GraphManager()
+    m1 = "11111111-1111-1111-1111-111111111111"
+    m2 = "22222222-2222-2222-2222-222222222222"
+
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=m1,
+        transaction_id="tx-1",
+        outcome="SUCCESS",
+        amount_paise=10000,
+    )
+    gm.ingest_signal(
+        fingerprint={"email_hash": "other@nexus.dev", "device_hash": "other_device"},
+        merchant_id=m2,
+        transaction_id="tx-2",
+        outcome="SUCCESS",
+        amount_paise=10000,
+    )
+
+    # Scoped to m1 (5 signals in clean fingerprint)
+    m1_graph_data = gm.get_merchant_subgraph(merchant_id=m1, limit=50)
+    m1_graph = CytoscapeGraph.model_validate(m1_graph_data)
+    assert len(m1_graph.nodes) == 5
+    assert len(m1_graph.edges) == 10  # 5-node complete clique = 5*4/2 = 10
+
+    # Scoped to m2 (2 signals)
+    m2_graph_data = gm.get_merchant_subgraph(merchant_id=m2, limit=50)
+    m2_graph = CytoscapeGraph.model_validate(m2_graph_data)
+    assert len(m2_graph.nodes) == 2
+    assert len(m2_graph.edges) == 1
+
+    # Unscoped with limit
+    all_graph_limit2 = gm.get_merchant_subgraph(merchant_id=None, limit=2)
+    assert len(all_graph_limit2["nodes"]) == 2
+
+    # Limit capped at 200
+    all_graph_large = gm.get_merchant_subgraph(merchant_id=None, limit=500)
+    assert len(all_graph_large["nodes"]) <= 200
+
+
+def test_cytoscape_get_node_profile(sample_fingerprint_clean):
+    """Verifies get_node_profile compiles ego graph and neighbor summaries (D-14)."""
+    from app.models.cytoscape import NodeDetailResponse
+
+    gm = GraphManager()
+    m1 = "11111111-1111-1111-1111-111111111111"
+    gm.ingest_signal(
+        fingerprint=sample_fingerprint_clean,
+        merchant_id=m1,
+        transaction_id="tx-prof-1",
+        outcome="FAILED",
+        amount_paise=12000,
+    )
+
+    email_hash = sample_fingerprint_clean["email_hash"]
+    node_key = f"email:{email_hash}"
+    profile_data = gm.get_node_profile(node_key)
+    assert profile_data is not None
+
+    # Validate against Pydantic model
+    profile = NodeDetailResponse.model_validate(profile_data)
+    assert profile.node_id == node_key
+    assert profile.failed_transaction_count == 1
+    assert profile.degree == 4  # 4 neighbors in 5-node clique
+    assert len(profile.neighbors_summary) == 4
+    assert len(profile.ego_graph.nodes) == 5
+
+    # Non-existent node returns None
+    assert gm.get_node_profile("email:unknown") is None
