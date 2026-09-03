@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexus_db"
+version = "0.1.0"
+description = "Project Nexus Database Adapter and Cryptographic Engine for Python"
+authors = [{ name = "Nexus Team" }]
+requires-python = ">=3.10"
+dependencies = [
+    "asyncpg>=0.29.0",
+    "cryptography>=43.0.0",
+    "pydantic>=2.9.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
