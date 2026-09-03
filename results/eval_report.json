@@ -1,0 +1,18 @@
+{
+  "total_transactions": 500,
+  "legitimate_count": 300,
+  "fraudulent_count": 200,
+  "blocked_by_nexus": 196,
+  "true_positives": 190,
+  "false_positives": 6,
+  "true_negatives": 294,
+  "false_negatives": 10,
+  "precision": 0.9694,
+  "recall": 0.95,
+  "f1_score": 0.9596,
+  "false_positive_rate": 0.02,
+  "false_positive_cost_paise": 1194000,
+  "false_positive_cost_inr": "₹11,940.00",
+  "mode": "fast",
+  "evaluated_at": "2026-09-03T20:50:28.013925+00:00"
+}
