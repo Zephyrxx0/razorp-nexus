@@ -148,7 +148,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 05-01: Dashboard Scaffolding, shadcn/ui Setup, Merchant Session & Onboarding Wizard (package.json, tailwind.config.ts, utils.ts, components/ui, merchant-provider.tsx, header.tsx, verify-keys, onboard)
+- [x] 05-01: Dashboard Scaffolding, shadcn/ui Setup, Merchant Session & Onboarding Wizard (package.json, tailwind.config.ts, utils.ts, components/ui, merchant-provider.tsx, header.tsx, verify-keys, onboard)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
