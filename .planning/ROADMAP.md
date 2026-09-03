@@ -152,7 +152,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 05-02: Catalog Manager, Real-Time Transactions Feed & Audit Timeline Drawer (table, sheet, switch, dialog, catalog-modal, ai-agent-view, products route, transactions feed SWR, test-transact simulation, audit-drawer)
+- [x] 05-02: Catalog Manager, Real-Time Transactions Feed & Audit Timeline Drawer (table, sheet, switch, dialog, catalog-modal, ai-agent-view, products route, transactions feed SWR, test-transact simulation, audit-drawer)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
