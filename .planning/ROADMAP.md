@@ -64,7 +64,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01: Core Project Setup, In-Memory Graph Manager & Async Concurrency Locking (pyproject.toml, schemas.py, AsyncRWLock, GraphManager, test_graph_manager.py)
+- [x] 02-01: Core Project Setup, In-Memory Graph Manager & Async Concurrency Locking (pyproject.toml, schemas.py, AsyncRWLock, GraphManager, test_graph_manager.py)
 - [ ] 02-02: Trust Scoring Engine & Connected Components Ring Detection (scoring.py, ring_detector.py, sync ego check, test_scoring.py, test_ring_detector.py)
 
 **Wave 2** *(blocked on Wave 1 completion)*
