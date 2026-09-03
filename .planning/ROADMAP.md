@@ -119,15 +119,15 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 04-01: Scaffold, Auth & Semantic Catalog Search (Next.js 14 App Router, Vitest config, sliding-window rate limiter, Bearer token auth helper, Gemini text-embedding-004 pgvector <=> cosine matching with ILIKE fallback, browse mode, dynamic agent_purchase_url, automated tests)
+- [x] 04-01: Scaffold, Auth & Semantic Catalog Search (Next.js 14 App Router, Vitest config, sliding-window rate limiter, Bearer token auth helper, Gemini text-embedding-004 pgvector <=> cosine matching with ILIKE fallback, browse mode, dynamic agent_purchase_url, automated tests)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02: Transact API Proxy & Sealed Audit Trail Delivery (sanitize buyer fingerprint via @nexus/db, proxy to ADK orchestrator port 8000 with 10s AbortController timeout, explicit HTTP status mapping 200/403/409/422/500/504, 100% audit trail embedding, historical GET /api/audit/[transaction_id] with hash chain verification)
+- [x] 04-02: Transact API Proxy & Sealed Audit Trail Delivery (sanitize buyer fingerprint via @nexus/db, proxy to ADK orchestrator port 8000 with 10s AbortController timeout, explicit HTTP status mapping 200/403/409/422/500/504, 100% audit trail embedding, historical GET /api/audit/[transaction_id] with hash chain verification)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-03: Razorpay Webhook Ingestion & Graph Signaling (timing-safe HMAC-SHA256 verification via crypto.timingSafeEqual, terminal status idempotency guard, status updates in PostgreSQL, non-blocking signal dispatch to Trust Graph port 8001, signed webhook fixture generator helper, automated tests)
+- [x] 04-03: Razorpay Webhook Ingestion & Graph Signaling (timing-safe HMAC-SHA256 verification via crypto.timingSafeEqual, terminal status idempotency guard, status updates in PostgreSQL, non-blocking signal dispatch to Trust Graph port 8001, signed webhook fixture generator helper, automated tests)
 
 ### Phase 5: Merchant Dashboard UI
 
@@ -178,6 +178,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Database Schema & Core Data Layer | 3/3 | Complete    | 2026-09-03 |
 | 2. Trust Graph Engine Microservice | 3/3 | Complete    | 2026-09-03 |
 | 3. Google ADK Orchestrator & Tool Suite | 3/3 | Complete    | 2026-09-03 |
-| 4. MaaS Gateway & Webhook API Layer | 0/TBD | Not started | - |
+| 4. MaaS Gateway & Webhook API Layer | 3/3 | Complete    | 2026-09-03 |
 | 5. Merchant Dashboard UI | 0/TBD | Not started | - |
 | 6. Autonomous Demo Buyer & Evaluation Suite | 0/TBD | Not started | - |

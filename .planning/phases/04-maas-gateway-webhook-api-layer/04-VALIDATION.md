@@ -38,13 +38,13 @@ created: 2026-09-03
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 04-01-01 | 01 | 1 | — | T-04-01 | Next.js 14 App Router, package.json dependencies, Vitest configuration, and DB client wiring | unit | `npm test -- test/routes/health.test.ts` | ❌ W0 | ⬜ pending |
-| 04-01-02 | 01 | 1 | MAAS-04 | T-04-02 | Opaque Bearer token (nx_live_*) SHA-256 validation, 401/403/404 handling, in-memory rate limiting (429) | unit | `npm test -- test/routes/auth.test.ts` | ❌ W0 | ⬜ pending |
-| 04-01-03 | 01 | 1 | MAAS-01, MAAS-02 | T-04-03 | GET /api/maas/{id}/catalog with Gemini text-embedding-004 pgvector <=> cosine matching, ILIKE fallback, 0.5 threshold, and dynamic agent_purchase_url | unit | `npm test -- test/routes/catalog.test.ts` | ❌ W0 | ⬜ pending |
-| 04-02-01 | 02 | 2 | MAAS-03, MAAS-05 | T-04-04 | POST /api/maas/{id}/transact buyer sanitization via @nexus/db, proxy to ADK runner port 8000, 10s timeout, and status mapping (200, 403, 409, 422, 500, 504) | integration | `npm test -- test/routes/transact.test.ts` | ❌ W0 | ⬜ pending |
-| 04-02-02 | 02 | 2 | AUDIT-03 | T-04-05 | 100% transactions return sealed audit_trail in transact payload; GET /api/audit/{id} validates hash chain continuity | unit | `npm test -- test/routes/audit.test.ts` | ❌ W0 | ⬜ pending |
-| 04-03-01 | 03 | 3 | RZP-03 | T-04-06 | POST /api/webhooks/razorpay verifies X-Razorpay-Signature with timing-safe crypto.timingSafeEqual on raw request text | unit | `npm test -- test/routes/webhook.test.ts` | ❌ W0 | ⬜ pending |
-| 04-03-02 | 03 | 3 | RZP-04 | T-04-07 | Webhook processes payment.captured and payment.failed, enforces terminal status idempotency, and dispatches async non-blocking signal to Trust Graph port 8001 | integration | `npm test -- test/routes/webhook.test.ts` | ❌ W0 | ⬜ pending |
+| 04-01-01 | 01 | 1 | — | T-04-01 | Next.js 14 App Router, package.json dependencies, Vitest configuration, and DB client wiring | unit | `npm test -- test/routes/health.test.ts` | ✅ | ✅ green |
+| 04-01-02 | 01 | 1 | MAAS-04 | T-04-02 | Opaque Bearer token (nx_live_*) SHA-256 validation, 401/403/404 handling, in-memory rate limiting (429) | unit | `npm test -- test/routes/auth.test.ts` | ✅ | ✅ green |
+| 04-01-03 | 01 | 1 | MAAS-01, MAAS-02 | T-04-03 | GET /api/maas/{id}/catalog with Gemini text-embedding-004 pgvector <=> cosine matching, ILIKE fallback, 0.5 threshold, and dynamic agent_purchase_url | unit | `npm test -- test/routes/catalog.test.ts` | ✅ | ✅ green |
+| 04-02-01 | 02 | 2 | MAAS-03, MAAS-05 | T-04-04 | POST /api/maas/{id}/transact buyer sanitization via @nexus/db, proxy to ADK runner port 8000, 10s timeout, and status mapping (200, 403, 409, 422, 500, 504) | integration | `npm test -- test/routes/transact.test.ts` | ✅ | ✅ green |
+| 04-02-02 | 02 | 2 | AUDIT-03 | T-04-05 | 100% transactions return sealed audit_trail in transact payload; GET /api/audit/{id} validates hash chain continuity | unit | `npm test -- test/routes/audit.test.ts` | ✅ | ✅ green |
+| 04-03-01 | 03 | 3 | RZP-03 | T-04-06 | POST /api/webhooks/razorpay verifies X-Razorpay-Signature with timing-safe crypto.timingSafeEqual on raw request text | unit | `npm test -- test/routes/webhook.test.ts` | ✅ | ✅ green |
+| 04-03-02 | 03 | 3 | RZP-04 | T-04-07 | Webhook processes payment.captured and payment.failed, enforces terminal status idempotency, and dispatches async non-blocking signal to Trust Graph port 8001 | integration | `npm test -- test/routes/webhook.test.ts` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -52,10 +52,10 @@ created: 2026-09-03
 
 ## Wave 0 Requirements
 
-- [ ] `vitest.config.ts` — test runner configuration for Next.js route handlers
-- [ ] `test/helpers/webhook-generator.ts` — HMAC-SHA256 signed test fixture generator
-- [ ] `test/helpers/mock-adk.ts` — mock HTTP server / interceptor for ADK port 8000
-- [ ] Test stub files: `test/routes/auth.test.ts`, `test/routes/catalog.test.ts`, `test/routes/transact.test.ts`, `test/routes/webhook.test.ts`, `test/routes/audit.test.ts`
+- [x] `vitest.config.ts` — test runner configuration for Next.js route handlers
+- [x] `test/helpers/webhook-generator.ts` — HMAC-SHA256 signed test fixture generator
+- [x] `test/helpers/mock-adk.ts` — mock HTTP server / interceptor for ADK port 8000
+- [x] Test stub files: `test/routes/auth.test.ts`, `test/routes/catalog.test.ts`, `test/routes/transact.test.ts`, `test/routes/webhook.test.ts`, `test/routes/audit.test.ts`
 
 ---
 

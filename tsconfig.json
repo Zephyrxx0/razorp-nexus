@@ -5,18 +5,43 @@
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@nexus/db": ["./db/ts/src/index.ts"],
-      "@nexus/db/*": ["./db/ts/src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@nexus/db": [
+        "./db/ts/src/index.ts"
+      ],
+      "@nexus/db/*": [
+        "./db/ts/src/*"
+      ]
     },
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "src/**/*",
     ".next/types/**/*.ts",
     "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test"
   ]
 }
-

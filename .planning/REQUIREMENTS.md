@@ -9,11 +9,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 ### MaaS Gateway (Merchant-as-an-API)
 
-- [ ] **MAAS-01**: Merchant can expose product catalog via `GET /api/maas/{merchant_id}/catalog` supporting natural language queries using Gemini `text-embedding-004` and pgvector cosine similarity.
-- [ ] **MAAS-02**: MaaS catalog endpoint returns structured JSON with exact paise pricing, currency (INR), stock availability, and direct `agent_purchase_url`.
-- [ ] **MAAS-03**: AI buyer can execute purchase via `POST /api/maas/{merchant_id}/transact` with natural language intent and buyer fingerprint object.
-- [ ] **MAAS-04**: MaaS API enforces Bearer token authentication generated during merchant onboarding and hashed (SHA-256) at rest.
-- [ ] **MAAS-05**: MaaS API returns structured HTTP responses: 200 (SUCCESS with receipt & audit trail), 403 (TRUST DENIED with risk breakdown), 409 (STOCK ERROR), or 500 (FAILED).
+- [x] **MAAS-01**: Merchant can expose product catalog via `GET /api/maas/{merchant_id}/catalog` supporting natural language queries using Gemini `text-embedding-004` and pgvector cosine similarity.
+- [x] **MAAS-02**: MaaS catalog endpoint returns structured JSON with exact paise pricing, currency (INR), stock availability, and direct `agent_purchase_url`.
+- [x] **MAAS-03**: AI buyer can execute purchase via `POST /api/maas/{merchant_id}/transact` with natural language intent and buyer fingerprint object.
+- [x] **MAAS-04**: MaaS API enforces Bearer token authentication generated during merchant onboarding and hashed (SHA-256) at rest.
+- [x] **MAAS-05**: MaaS API returns structured HTTP responses: 200 (SUCCESS with receipt & audit trail), 403 (TRUST DENIED with risk breakdown), 409 (STOCK ERROR), or 500 (FAILED).
 
 ### Agent Orchestration (Google ADK)
 
@@ -42,14 +42,14 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 - [x] **RZP-01**: Order tool creates Razorpay test-mode orders using merchant credentials with amount in integer paise and audit notes attached.
 - [x] **RZP-02**: Payment tool captures payments against created orders in test mode and records `razorpay_payment_id`.
-- [ ] **RZP-03**: Webhook endpoint (`POST /api/webhooks/razorpay`) verifies `X-Razorpay-Signature` header with timing-safe HMAC-SHA256 comparison.
-- [ ] **RZP-04**: Webhook handler processes `payment.captured`, `payment.failed`, and `order.paid` events to update transaction statuses and feed graph signals.
+- [x] **RZP-03**: Webhook endpoint (`POST /api/webhooks/razorpay`) verifies `X-Razorpay-Signature` header with timing-safe HMAC-SHA256 comparison.
+- [x] **RZP-04**: Webhook handler processes `payment.captured`, `payment.failed`, and `order.paid` events to update transaction statuses and feed graph signals.
 
 ### Audit Trail & Explainability
 
 - [x] **AUDIT-01**: PostgreSQL schema enforces immutable append-only audit entries (`AuditEntry`) via database triggers (disallowing UPDATE/DELETE).
 - [x] **AUDIT-02**: Audit trail records timestamp (ms precision), duration, step name, input summary, output summary, and plain-English rationale for every tool decision.
-- [ ] **AUDIT-03**: 100% of transactions (success, denied, failed) produce a complete, sealed audit trail visible in dashboard and downloadable as JSON.
+- [x] **AUDIT-03**: 100% of transactions (success, denied, failed) produce a complete, sealed audit trail visible in dashboard and downloadable as JSON.
 
 ### Merchant Dashboard
 
@@ -87,11 +87,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MAAS-01 | Phase 4 | Pending |
-| MAAS-02 | Phase 4 | Pending |
-| MAAS-03 | Phase 4 | Pending |
-| MAAS-04 | Phase 4 | Pending |
-| MAAS-05 | Phase 4 | Pending |
+| MAAS-01 | Phase 4 | Complete |
+| MAAS-02 | Phase 4 | Complete |
+| MAAS-03 | Phase 4 | Complete |
+| MAAS-04 | Phase 4 | Complete |
+| MAAS-05 | Phase 4 | Complete |
 | ORCH-01 | Phase 3 | Complete |
 | ORCH-02 | Phase 3 | Complete |
 | ORCH-03 | Phase 3 | Complete |
@@ -108,11 +108,11 @@ Requirements for initial release covering both Track 01 (Agentic Commerce) and T
 | RING-04 | Phase 2 | Complete |
 | RZP-01 | Phase 3 | Complete |
 | RZP-02 | Phase 3 | Complete |
-| RZP-03 | Phase 4 | Pending |
-| RZP-04 | Phase 4 | Pending |
+| RZP-03 | Phase 4 | Complete |
+| RZP-04 | Phase 4 | Complete |
 | AUDIT-01 | Phase 1 | Complete |
 | AUDIT-02 | Phase 1 | Complete |
-| AUDIT-03 | Phase 4 | Pending |
+| AUDIT-03 | Phase 4 | Complete |
 | DASH-01 | Phase 5 | Pending |
 | DASH-02 | Phase 5 | Pending |
 | DASH-03 | Phase 5 | Pending |
