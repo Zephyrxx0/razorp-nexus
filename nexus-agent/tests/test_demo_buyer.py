@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+import json
 from unittest.mock import AsyncMock, patch
 import httpx
 import pytest
 
+from nexus_agent.agents.demo_buyer import (
+    BuyerExecutionReceipt,
+    DemoBuyerAgent,
+    extract_query_and_constraints,
+    parse_cli_args,
+)
 from nexus_agent.tools.maas_client import (
     query_merchant_catalog,
     transact_with_merchant,
@@ -206,3 +213,186 @@ async def test_transact_with_merchant_denied():
         assert res["trust_score"] == 12.0
         assert res["razorpay_order_id"] is None
         assert len(res["risk_factors"]) == 2
+
+
+@pytest.mark.asyncio
+async def test_demo_buyer_heuristic_cheapest():
+    """Test DemoBuyerAgent heuristic shopping selecting the cheapest candidate."""
+    catalog_response = {
+        "merchant_id": "merchant-apex",
+        "result_count": 2,
+        "products": [
+            {
+                "id": "prod-expensive",
+                "name": "Noise-Cancelling Headphones Pro",
+                "price_paise": 499900,
+                "price_display": "₹4,999.00",
+                "stock": 10,
+            },
+            {
+                "id": "prod-cheap",
+                "name": "Budget Wireless Earbuds",
+                "price_paise": 149900,
+                "price_display": "₹1,499.00",
+                "stock": 25,
+            },
+        ],
+    }
+
+    transact_response = {
+        "transaction_id": "tx-cheap-success",
+        "status": "SUCCESS",
+        "trust_score": 95.0,
+        "trust_decision": "ALLOW",
+        "razorpay_order_id": "order_cheap_001",
+        "razorpay_payment_id": "pay_cheap_001",
+        "audit_trail": [{"step": "parse_intent"}, {"step": "log_audit_entry"}],
+    }
+
+    with patch("nexus_agent.agents.demo_buyer.query_merchant_catalog", new_callable=AsyncMock) as mock_cat:
+        mock_cat.return_value = {
+            "status": "SUCCESS",
+            "products": catalog_response["products"],
+            "result_count": 2,
+        }
+
+        with patch("nexus_agent.agents.demo_buyer.transact_with_merchant", new_callable=AsyncMock) as mock_tx:
+            mock_tx.return_value = transact_response
+
+            agent = DemoBuyerAgent(
+                merchant_id="merchant-apex",
+                token="maas_live_token_demo",
+                verbose=False,
+            )
+
+            receipt = await agent.run("Buy the cheapest wireless headphones")
+
+            assert receipt.success is True
+            assert receipt.status == "SUCCESS"
+            assert receipt.selected_product is not None
+            assert receipt.selected_product["id"] == "prod-cheap"
+            assert receipt.amount_paise == 149900
+            assert receipt.razorpay_order_id == "order_cheap_001"
+            assert receipt.razorpay_payment_id == "pay_cheap_001"
+            assert receipt.trust_score == 95.0
+            assert len(receipt.timeline) >= 3
+
+            mock_tx.assert_called_once()
+            _, kwargs = mock_tx.call_args
+            assert "Budget Wireless Earbuds" in kwargs["intent"]
+
+
+@pytest.mark.asyncio
+async def test_demo_buyer_heuristic_denied():
+    """Test DemoBuyerAgent handling trust gate 403 DENIED response."""
+    catalog_response = {
+        "status": "SUCCESS",
+        "products": [
+            {
+                "id": "prod-1",
+                "name": "Apex Pro Phone",
+                "price_paise": 2999900,
+                "price_display": "₹29,999.00",
+                "stock": 5,
+            }
+        ],
+    }
+
+    transact_response = {
+        "status": "DENIED",
+        "transaction_id": "tx-denied-777",
+        "trust_score": 15.0,
+        "trust_decision": "DENY",
+        "risk_factors": ["ring_member: device shared with known fraud cluster"],
+        "message": "Transaction denied due to risk detection",
+        "audit_trail": [{"step": "check_trust_graph", "decision": "DENY"}],
+    }
+
+    with patch("nexus_agent.agents.demo_buyer.query_merchant_catalog", new_callable=AsyncMock) as mock_cat:
+        mock_cat.return_value = catalog_response
+
+        with patch("nexus_agent.agents.demo_buyer.transact_with_merchant", new_callable=AsyncMock) as mock_tx:
+            mock_tx.return_value = transact_response
+
+            agent = DemoBuyerAgent(
+                merchant_id="merchant-apex",
+                token="maas_live_token_demo",
+                verbose=False,
+            )
+
+            receipt = await agent.run("Buy 1 Apex Pro Phone")
+
+            assert receipt.success is False
+            assert receipt.status == "DENIED"
+            assert receipt.trust_score == 15.0
+            assert receipt.razorpay_order_id is None
+            assert receipt.razorpay_payment_id is None
+            assert "Transaction denied" in str(receipt.error_message)
+
+
+def test_demo_buyer_cli_args():
+    """Test CLI argument parsing with default and overridden flags."""
+    # Custom args
+    args = parse_cli_args([
+        "--merchant", "custom-merchant-uuid",
+        "--token", "custom-token-123",
+        "--goal", "Buy running shoes under 3000",
+        "--base-url", "http://localhost:8080",
+        "--json",
+    ])
+    assert args.merchant_id == "custom-merchant-uuid"
+    assert args.token == "custom-token-123"
+    assert args.goal == "Buy running shoes under 3000"
+    assert args.base_url == "http://localhost:8080"
+    assert args.output_json is True
+
+    # Default args
+    defaults = parse_cli_args([])
+    assert defaults.goal == "Buy the cheapest wireless headphones"
+    assert defaults.base_url == "http://localhost:3000"
+    assert defaults.output_json is False
+
+
+def test_demo_buyer_receipt_serialization():
+    """Test BuyerExecutionReceipt JSON serialization and schema validity."""
+    receipt = BuyerExecutionReceipt(
+        success=True,
+        merchant_id="merchant-123",
+        goal="Buy headphones",
+        selected_product={"id": "p1", "name": "Headphones", "price_paise": 200000},
+        transaction_id="tx-999",
+        razorpay_order_id="order_999",
+        razorpay_payment_id="pay_999",
+        amount_paise=200000,
+        amount_inr="₹2,000.00",
+        status="SUCCESS",
+        trust_score=88.5,
+        audit_steps_count=6,
+        timeline=["Discover: OK", "Transact: OK"],
+        error_message=None,
+    )
+
+    json_str = receipt.model_dump_json(indent=2)
+    parsed = json.loads(json_str)
+
+    assert parsed["success"] is True
+    assert parsed["merchant_id"] == "merchant-123"
+    assert parsed["transaction_id"] == "tx-999"
+    assert parsed["amount_paise"] == 200000
+    assert parsed["amount_inr"] == "₹2,000.00"
+    assert parsed["status"] == "SUCCESS"
+    assert parsed["trust_score"] == 88.5
+    assert parsed["audit_steps_count"] == 6
+    assert len(parsed["timeline"]) == 2
+
+
+def test_extract_query_and_constraints():
+    """Test natural language goal keyword and constraint extraction."""
+    q1, c1 = extract_query_and_constraints("Buy the cheapest wireless headphones from Apex Electronics")
+    assert "wireless headphones" in q1.lower()
+    assert c1["sort_by"] == "cheapest"
+
+    q2, c2 = extract_query_and_constraints("Purchase premium shoes under 5000")
+    assert "shoes" in q2.lower()
+    assert c2["sort_by"] == "expensive"
+    assert c2["max_price_paise"] == 500000
