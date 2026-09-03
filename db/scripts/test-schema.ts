@@ -129,3 +129,4 @@ runSchemaValidation().catch((err) => {
   console.error('Fatal error during validation:', err);
   process.exit(1);
 });
+

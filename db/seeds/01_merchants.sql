@@ -60,3 +60,4 @@ ON CONFLICT (id) DO UPDATE SET
   maas_endpoint = EXCLUDED.maas_endpoint,
   is_active = EXCLUDED.is_active,
   updated_at = clock_timestamp();
+

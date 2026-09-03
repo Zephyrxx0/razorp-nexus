@@ -72,3 +72,4 @@ Automated TypeScript scripts (`migrate.ts`, `test-schema.ts`, `test-triggers.ts`
 | `db/scripts/migrate.ts` | Programmatic SQL migration runner using `@nexus/db` |
 | `db/scripts/test-schema.ts` | End-to-end schema, HNSW vector search, and audit chain verification script |
 | `db/scripts/test-triggers.ts` | Integration test asserting PostgreSQL trigger immutability and chain verification |
+
