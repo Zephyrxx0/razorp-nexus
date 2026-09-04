@@ -1,2 +1,1 @@
-export { HeroAscii, HeroAscii as default } from "@/components/landing/hero-ascii"
-
+export { HeroSection as HeroAscii, HeroSection as default } from "@/components/landing/hero-section"
