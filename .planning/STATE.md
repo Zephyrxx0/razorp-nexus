@@ -87,6 +87,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260905-1mz | Fix root layout missing html and body tags | 2026-09-05 | 2adef98 | [260905-1mz-fix-root-layout-missing-html-and-body-ta](./quick/260905-1mz-fix-root-layout-missing-html-and-body-ta/) |
+| 260905-203 | Add Hero ASCII landing page for Nexus | 2026-09-05 | 9147ab6 | [260905-203-add-ascii-hero-landing-page-for-nexus](./quick/260905-203-add-ascii-hero-landing-page-for-nexus/) |
 
 ## Deferred Items
 
