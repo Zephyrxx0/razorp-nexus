@@ -82,6 +82,12 @@ None yet.
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260905-1mz | Fix root layout missing html and body tags | 2026-09-05 | 2adef98 | [260905-1mz-fix-root-layout-missing-html-and-body-ta](./quick/260905-1mz-fix-root-layout-missing-html-and-body-ta/) |
+
 ## Deferred Items
 
 Items acknowledged and deferred at milestone close, most recent first:
