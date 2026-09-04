@@ -1,22 +1,16 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import Link from "next/link"
-import AsciiVitruvian from "@/components/ui/ascii-vitruvian"
 import { ShieldCheck, Cpu, ArrowRight, Zap, Terminal, Activity } from "lucide-react"
 
 export function HeroAscii() {
-  const [themeMode, setThemeMode] = useState<"emerald" | "white">("emerald")
-
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#09090b] text-foreground flex flex-col justify-between select-none">
-      {/* Vitruvian ASCII Canvas Shader — Desktop Background */}
-      <div className="absolute inset-0 w-full h-full hidden lg:block pointer-events-none opacity-80">
-        <AsciiVitruvian className="w-full h-full" speed={1.1} theme={themeMode} />
-      </div>
-
-      {/* Mobile/Fallback Starfield Background */}
-      <div className="absolute inset-0 w-full h-full lg:hidden stars-bg pointer-events-none" />
+      {/* Ambient Cybernetic Grid & Radial Glow Background */}
+      <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(16,185,129,0.12),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#27272a22_1px,transparent_1px),linear-gradient(to_bottom,#27272a22_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,#000_65%,transparent_100%)] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full stars-bg pointer-events-none opacity-30" />
 
       {/* Top Header / Navigation Bar */}
       <div className="relative z-20 border-b border-border/40 bg-background/60 backdrop-blur-md">
@@ -41,14 +35,6 @@ export function HeroAscii() {
             </span>
             <span className="text-border">|</span>
             <span>RZP TEST-MODE: ENGAGED</span>
-            <span className="text-border">|</span>
-            <button
-              onClick={() => setThemeMode(themeMode === "emerald" ? "white" : "emerald")}
-              className="text-[9px] px-2 py-0.5 border border-border/70 rounded hover:border-primary hover:text-primary transition-colors"
-              title="Toggle ASCII Color Theme"
-            >
-              ASCII: {themeMode.toUpperCase()}
-            </button>
           </div>
 
           {/* Right Action Links */}
