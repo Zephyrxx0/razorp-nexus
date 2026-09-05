@@ -12,10 +12,10 @@ export async function GET(req: NextRequest) {
     }
 
     const res = await query(
-      `SELECT id, merchant_id, name, description, price_paise, stock_quantity, category, is_ai_purchasable,
+      `SELECT id, merchant_id, name, description, price_paise, stock, stock_quantity, category, is_ai_purchasable,
               (embedding IS NOT NULL) as has_embedding, created_at, updated_at
        FROM products
-       WHERE merchant_id = $1
+       WHERE merchant_id = $1 AND is_active = true
        ORDER BY created_at DESC`,
       [merchantId]
     )

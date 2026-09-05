@@ -83,6 +83,14 @@ export async function POST(req: NextRequest) {
 
     return response
   } catch (error: any) {
+    // Postgres unique-constraint violation (e.g. duplicate email)
+    if (error.code === "23505") {
+      const field = error.constraint?.includes("email") ? "email address" : "field"
+      return NextResponse.json(
+        { error: `A merchant with this ${field} already exists. Please use a different one.` },
+        { status: 409 }
+      )
+    }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

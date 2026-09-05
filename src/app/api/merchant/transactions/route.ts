@@ -13,19 +13,33 @@ export async function GET(req: NextRequest) {
       )
     }
 
+    // Join transactions with the latest audit_entries row per transaction
+    // Uses canonical columns: buyer_fingerprint JSONB, audit_entries table
     const res = await query(
-      `SELECT t.id, t.merchant_id, t.buyer_email_hash, t.amount_paise, t.status,
-              t.razorpay_order_id, t.razorpay_payment_id, t.created_at,
-              COALESCE(a.trust_score, 85) as trust_score,
-              COALESCE(a.decision, CASE WHEN t.status = 'SUCCESS' THEN 'ALLOW' ELSE 'DENY' END) as decision,
-              COALESCE(a.risk_factors, '[]'::jsonb) as risk_factors,
-              a.step_data, a.payload_hash, a.previous_hash
+      `SELECT
+         t.id,
+         t.merchant_id,
+         t.buyer_fingerprint->>'email_hash' AS buyer_email_hash,
+         t.amount_paise,
+         t.status,
+         t.trust_score,
+         t.trust_decision                  AS decision,
+         t.trust_risk_factors              AS risk_factors,
+         t.razorpay_order_id,
+         t.razorpay_payment_id,
+         t.created_at,
+         a.step_data,
+         a.entry_hash                      AS payload_hash,
+         a.prev_entry_hash                 AS previous_hash
        FROM transactions t
        LEFT JOIN LATERAL (
-         SELECT trust_score, decision, risk_factors, step_data, payload_hash, previous_hash
-         FROM audit_logs
+         SELECT
+           raw_data  AS step_data,
+           entry_hash,
+           prev_entry_hash
+         FROM audit_entries
          WHERE transaction_id = t.id
-         ORDER BY sequence_number DESC
+         ORDER BY step_number DESC
          LIMIT 1
        ) a ON true
        WHERE t.merchant_id = $1
@@ -36,7 +50,9 @@ export async function GET(req: NextRequest) {
 
     const transactions = res.rows.map((row: any) => ({
       ...row,
-      trust_score: row.trust_score !== null && row.trust_score !== undefined ? Number(row.trust_score) : null,
+      trust_score: row.trust_score !== null && row.trust_score !== undefined
+        ? Number(row.trust_score)
+        : null,
     }))
 
     return NextResponse.json({ transactions })

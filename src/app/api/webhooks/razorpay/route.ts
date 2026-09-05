@@ -55,25 +55,31 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 3. Query PostgreSQL transactions table
-  const { rows } = await query(
-    'SELECT id, merchant_id, status, amount_paise, buyer_fingerprint, razorpay_payment_id FROM transactions WHERE id = $1',
-    [nexusTxnId]
-  );
-
-  if (rows.length === 0) {
-    console.warn(`[Webhook] Transaction ${nexusTxnId} not found in database`);
-    return NextResponse.json(
-      {
-        received: true,
-        status: 'TRANSACTION_NOT_FOUND',
-        transaction_id: nexusTxnId,
-      },
-      { status: 200 }
+  // 3. Query PostgreSQL transactions table — wrapped in try/catch for DB safety
+  let txn: any;
+  try {
+    const { rows } = await query(
+      'SELECT id, merchant_id, status, amount_paise, buyer_fingerprint, razorpay_payment_id FROM transactions WHERE id = $1',
+      [nexusTxnId]
     );
-  }
 
-  const txn = rows[0];
+    if (rows.length === 0) {
+      console.warn(`[Webhook] Transaction ${nexusTxnId} not found in database`);
+      return NextResponse.json(
+        {
+          received: true,
+          status: 'TRANSACTION_NOT_FOUND',
+          transaction_id: nexusTxnId,
+        },
+        { status: 200 }
+      );
+    }
+
+    txn = rows[0];
+  } catch (dbErr: any) {
+    console.error('[Webhook] DB lookup error:', dbErr.message);
+    return NextResponse.json({ error: 'DB_ERROR', message: dbErr.message }, { status: 500 });
+  }
 
   // 4. Terminal State Idempotency Guard (D-14)
   if (txn.status === 'SUCCESS' || txn.status === 'FAILED') {

@@ -35,9 +35,12 @@ const CytoscapeGraph = dynamic(
 
 interface Ring {
   ring_id: string
-  risk_score: number
-  members_count: number
-  merchants_spanned: string[]
+  risk_score?: number
+  risk_level?: string
+  members_count?: number
+  member_nodes_count?: number
+  merchants_spanned?: string[]
+  affected_merchants?: string[]
   nodes?: string[]
 }
 
@@ -141,11 +144,15 @@ export default function TrustGraphPage() {
               className="h-8 rounded-md bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500"
             >
               <option value="">All Entities</option>
-              {rings.map((r) => (
-                <option key={r.ring_id} value={r.ring_id}>
-                  {r.ring_id} ({r.members_count} entities · {r.merchants_spanned.length} stores)
-                </option>
-              ))}
+              {rings.map((r) => {
+                const memberCount = r.members_count ?? r.member_nodes_count ?? (r.nodes ? r.nodes.length : 0)
+                const storeCount = (r.merchants_spanned ?? r.affected_merchants ?? []).length
+                return (
+                  <option key={r.ring_id} value={r.ring_id}>
+                    {r.ring_id.slice(0, 8)}... ({memberCount} entities · {storeCount} stores)
+                  </option>
+                )
+              })}
             </select>
           </div>
 

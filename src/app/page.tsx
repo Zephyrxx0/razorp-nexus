@@ -2,7 +2,6 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
-import { HeroAscii } from "@/components/landing/hero-ascii"
 import { HeroSection } from "@/components/landing/hero-section"
 import {
   Shield,
@@ -35,7 +34,7 @@ export default function LandingPage() {
       "ip_address": "198.51.100.42",
       "device_hash": "e3b0c44298fc1c149afbf4c8996fb924"
     }
-  }'`
+  }' | python3 -m json.tool`
 
   const handleCopy = () => {
     navigator.clipboard.writeText(sampleCurl)
@@ -90,8 +89,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#09090b] text-foreground flex flex-col font-sans">
-      {/* 1. Interactive ASCII Vitruvian Hero Section */}
-      <HeroAscii />
       {/* 1. Cybernetic Ambient Hero Section */}
       <HeroSection />
 
