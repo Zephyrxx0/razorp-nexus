@@ -62,23 +62,31 @@ export async function POST(
     );
   }
 
+  const hasBuyer =
+    (body.buyer && typeof body.buyer === "object" && Object.keys(body.buyer).length > 0) ||
+    (body.buyer_context && typeof body.buyer_context === "object" && Object.keys(body.buyer_context).length > 0) ||
+    body.buyer_email ||
+    body.email;
+
   if (
     !body ||
     typeof body !== "object" ||
     !body.intent ||
     typeof body.intent !== "string" ||
-    !body.intent.trim()
+    !body.intent.trim() ||
+    !hasBuyer
   ) {
     return NextResponse.json(
       {
         error: "INVALID_REQUEST",
-        message: "Missing required intent string",
+        message: "Missing required intent or buyer object",
         audit_trail: [],
       },
       { status: 422 }
     );
   }
 
+  // 4. Sanitize buyer fingerprint (D-09)
   // 4. Normalize and sanitize buyer payload (supports body.buyer, body.buyer_context, or flat top-level fields)
   let rawBuyer: any = body.buyer;
   if (!rawBuyer || typeof rawBuyer !== "object") {

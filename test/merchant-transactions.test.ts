@@ -81,7 +81,7 @@ describe("Merchant Transactions Feed & Simulation (DASH-03)", () => {
 
       // Verify audit log insertion had 6 steps
       expect(db.query).toHaveBeenCalledWith(
-        expect.stringContaining("INSERT INTO audit_logs"),
+        expect.stringContaining("INSERT INTO audit_entries"),
         expect.arrayContaining([
           "txn-sim-99",
           expect.stringContaining("parse_intent"),
