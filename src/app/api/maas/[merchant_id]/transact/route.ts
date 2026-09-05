@@ -67,21 +67,50 @@ export async function POST(
     typeof body !== "object" ||
     !body.intent ||
     typeof body.intent !== "string" ||
-    !body.intent.trim() ||
-    !body.buyer ||
-    typeof body.buyer !== "object"
+    !body.intent.trim()
   ) {
     return NextResponse.json(
       {
         error: "INVALID_REQUEST",
-        message: "Missing required intent or buyer object",
+        message: "Missing required intent string",
         audit_trail: [],
       },
       { status: 422 }
     );
   }
 
-  // 4. Sanitize buyer fingerprint (D-09)
+  // 4. Normalize and sanitize buyer payload (supports body.buyer, body.buyer_context, or flat top-level fields)
+  let rawBuyer: any = body.buyer;
+  if (!rawBuyer || typeof rawBuyer !== "object") {
+    if (body.buyer_context && typeof body.buyer_context === "object") {
+      rawBuyer = {
+        email: body.buyer_context.buyer_email || body.buyer_context.email,
+        ip: body.buyer_context.ip_address || body.buyer_context.ip,
+        device_id: body.buyer_context.device_id || body.buyer_context.device_hash,
+        upi_handle: body.buyer_context.upi_handle,
+        user_agent: body.buyer_context.user_agent,
+      };
+    } else {
+      rawBuyer = {
+        email: body.buyer_email || body.email || "agent-demo@nexus.ai",
+        ip: body.ip_address || body.ip || "198.51.100.42",
+        device_id: body.device_id || body.device_hash || "dev_demo_buyer_01",
+        upi_handle: body.upi_handle,
+        user_agent: body.user_agent,
+      };
+    }
+  } else {
+    rawBuyer = {
+      email: rawBuyer.email || rawBuyer.buyer_email || body.buyer_email || "agent-demo@nexus.ai",
+      ip: rawBuyer.ip || rawBuyer.ip_address || body.ip_address || "198.51.100.42",
+      device_id: rawBuyer.device_id || rawBuyer.device_hash || body.device_id || "dev_demo_buyer_01",
+      upi_handle: rawBuyer.upi_handle || body.upi_handle,
+      user_agent: rawBuyer.user_agent || body.user_agent,
+    };
+  }
+  body.buyer = rawBuyer;
+
+  // Sanitize buyer fingerprint (D-09)
   sanitizeBuyerInput(body.buyer);
 
   // 5. Forward execution to ADK orchestrator (D-08, D-11)

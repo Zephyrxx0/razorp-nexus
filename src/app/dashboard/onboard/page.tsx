@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   Shield,
@@ -34,7 +34,10 @@ export default function OnboardPage() {
 
   // Step 1: Store info
   const [storeName, setStoreName] = useState("Apex Electronics")
-  const [storeEmail, setStoreEmail] = useState("merchant@apex.io")
+  // Unique suffix per session so demo re-runs don't hit the duplicate-email constraint
+  const [storeEmail, setStoreEmail] = useState(
+    () => `merchant-${Math.random().toString(16).slice(2, 6)}@apex.io`
+  )
 
   // Step 2: Razorpay test credentials
   const [keyId, setKeyId] = useState("rzp_test_Apex10203040")
@@ -60,6 +63,9 @@ export default function OnboardPage() {
   const [copiedToken, setCopiedToken] = useState(false)
   const [simulating, setSimulating] = useState(false)
   const [simResult, setSimResult] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   const handleValidateKeys = async () => {
     setKeyValidating(true)
@@ -156,6 +162,8 @@ export default function OnboardPage() {
       setSimulating(false)
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div className="max-w-2xl mx-auto py-6">
@@ -425,8 +433,11 @@ export default function OnboardPage() {
   -H "Content-Type: application/json" \\
   -d '{
     "intent": "Buy 1 ${prodName}",
-    "buyer_email": "agent@buyer.ai",
-    "ip_address": "192.168.1.50"
+    "buyer": {
+      "email": "agent@buyer.ai",
+      "ip": "198.51.100.42",
+      "device_id": "dev_agent_01"
+    }
   }'`}
               </pre>
             </div>
