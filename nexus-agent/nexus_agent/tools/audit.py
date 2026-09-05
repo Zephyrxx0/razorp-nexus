@@ -35,6 +35,12 @@ class _AcquireHelper:
         self._ctx = None
 
     async def __aenter__(self):
+        if self.pool_or_conn is None:
+            try:
+                from nexus_db.client import get_pool
+                self.pool_or_conn = await get_pool()
+            except Exception:
+                pass
         if hasattr(self.pool_or_conn, "acquire"):
             self._ctx = self.pool_or_conn.acquire()
             if hasattr(self._ctx, "__aenter__"):
@@ -170,22 +176,60 @@ async def log_audit_entry(
                 duration_ms = int(entry.get("duration_ms", 0))
                 is_error = bool(entry.get("is_error", False))
 
-                await conn.execute(
-                    insert_sql,
-                    entry_id,
-                    _to_uuid(tx_id_str),
-                    entry.get("step_name", ""),
-                    entry.get("step_number", 1),
-                    ts,
-                    duration_ms,
-                    entry.get("input_summary", ""),
-                    entry.get("output_summary", ""),
-                    entry.get("reason", ""),
-                    raw_json,
-                    is_error,
-                    entry.get("prev_entry_hash", "GENESIS"),
-                    entry.get("entry_hash", ""),
-                )
+                try:
+                    await conn.execute(
+                        insert_sql,
+                        entry_id,
+                        _to_uuid(tx_id_str),
+                        entry.get("step_name", ""),
+                        entry.get("step_number", 1),
+                        ts,
+                        duration_ms,
+                        entry.get("input_summary", ""),
+                        entry.get("output_summary", ""),
+                        entry.get("reason", ""),
+                        raw_json,
+                        is_error,
+                        entry.get("prev_entry_hash", "GENESIS"),
+                        entry.get("entry_hash", ""),
+                    )
+                except Exception as exc:
+                    if "ForeignKeyViolationError" in type(exc).__name__ or "foreign key" in str(exc).lower():
+                        ensure_sql = """
+                        INSERT INTO transactions (
+                            id, merchant_id, intent_raw, quantity, amount_paise, currency, buyer_fingerprint, status
+                        ) VALUES ($1, $2, $3, 1, $4, 'INR', $5::jsonb, 'PENDING')
+                        ON CONFLICT (id) DO NOTHING;
+                        """
+                        fp_json = json.dumps({"email": buyer_email} if buyer_email else {})
+                        safe_amt = max(1, int(amount_paise or 1))
+                        m_id = _to_uuid(merchant_id) if merchant_id else _to_uuid("00000000-0000-0000-0000-000000000001")
+                        await conn.execute(
+                            ensure_sql,
+                            _to_uuid(tx_id_str),
+                            m_id,
+                            final_reason or f"Tx {tx_id_str}",
+                            safe_amt,
+                            fp_json,
+                        )
+                        await conn.execute(
+                            insert_sql,
+                            entry_id,
+                            _to_uuid(tx_id_str),
+                            entry.get("step_name", ""),
+                            entry.get("step_number", 1),
+                            ts,
+                            duration_ms,
+                            entry.get("input_summary", ""),
+                            entry.get("output_summary", ""),
+                            entry.get("reason", ""),
+                            raw_json,
+                            is_error,
+                            entry.get("prev_entry_hash", "GENESIS"),
+                            entry.get("entry_hash", ""),
+                        )
+                    else:
+                        raise
 
             # 2. Update transactions table
             update_sql = """

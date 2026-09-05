@@ -14,9 +14,26 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager initializing defaults."""
+    db_pool = None
+    try:
+        from nexus_db.client import get_pool, close_db_pool
+        db_pool = await get_pool()
+        logger.info("Database connection pool initialized for agent runner.")
+    except Exception as exc:
+        logger.warning("Could not connect to database pool on startup: %s", exc)
+
     if not hasattr(app.state, "runner") or app.state.runner is None:
-        app.state.runner = DeterministicPipelineRunner()
+        app.state.runner = DeterministicPipelineRunner(db_pool=db_pool)
+    elif app.state.runner.db_pool is None and db_pool is not None:
+        app.state.runner.db_pool = db_pool
+
     yield
+
+    try:
+        from nexus_db.client import close_db_pool
+        await close_db_pool()
+    except Exception:
+        pass
 
 
 def create_app() -> FastAPI:

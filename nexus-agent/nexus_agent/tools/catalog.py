@@ -27,6 +27,17 @@ class _AcquireHelper:
         self._ctx = None
 
     async def __aenter__(self):
+        if self.pool_or_conn is None:
+            try:
+                from nexus_db.client import get_pool
+                self.pool_or_conn = await get_pool()
+            except Exception:
+                pass
+        if self.pool_or_conn is None:
+            raise RuntimeError(
+                "Database pool is not initialized or PostgreSQL is unreachable. "
+                "Ensure PostgreSQL is running on port 5432."
+            )
         if hasattr(self.pool_or_conn, "acquire"):
             self._ctx = self.pool_or_conn.acquire()
             if hasattr(self._ctx, "__aenter__"):

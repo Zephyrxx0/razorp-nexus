@@ -49,6 +49,18 @@ class DeterministicPipelineRunner:
         if self.encryption_key and not context.encryption_key:
             context.encryption_key = self.encryption_key
 
+        # Automatically resolve DB pool if missing
+        if context.db_pool is None:
+            if self.db_pool is not None:
+                context.db_pool = self.db_pool
+            else:
+                try:
+                    from nexus_db.client import get_pool
+                    context.db_pool = await get_pool()
+                    self.db_pool = context.db_pool
+                except Exception as exc:
+                    logger.debug("Automatic get_pool fallback in runner: %s", exc)
+
         product_query = ""
 
         # =========================================================================

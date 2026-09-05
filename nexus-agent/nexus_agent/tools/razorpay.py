@@ -31,6 +31,17 @@ class _AcquireHelper:
         self._ctx = None
 
     async def __aenter__(self):
+        if self.pool_or_conn is None:
+            try:
+                from nexus_db.client import get_pool
+                self.pool_or_conn = await get_pool()
+            except Exception:
+                pass
+        if self.pool_or_conn is None:
+            raise RuntimeError(
+                "Database pool is not initialized or PostgreSQL is unreachable. "
+                "Ensure PostgreSQL is running on port 5432."
+            )
         if hasattr(self.pool_or_conn, "acquire"):
             self._ctx = self.pool_or_conn.acquire()
             if hasattr(self._ctx, "__aenter__"):
@@ -53,6 +64,13 @@ async def _resolve_adapter(
     """Resolve or instantiate RazorpayClientAdapter from merchant DB credentials."""
     if adapter is not None:
         return adapter
+
+    if pool is None:
+        try:
+            from nexus_db.client import get_pool
+            pool = await get_pool()
+        except Exception:
+            pass
 
     if pool is None:
         raise ValueError("Either adapter or pool must be provided.")
