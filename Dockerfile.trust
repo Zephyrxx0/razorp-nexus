@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy database shared library and service code
+COPY db/py /app/db/py
+COPY trust-graph-service /app/trust-graph-service
+
+# Install dependencies and packages
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir /app/db/py && \
+    pip install --no-cache-dir /app/trust-graph-service
+
+WORKDIR /app/trust-graph-service
+
+EXPOSE 8080
+
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+

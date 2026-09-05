@@ -10,6 +10,8 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy:cloudrun": "./deploy/deploy-cloudrun.sh"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

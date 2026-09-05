@@ -205,8 +205,11 @@ export default function SettingsPage() {
     "YOUR_MAAS_TOKEN"
   const merchantId = activeMerchant?.id || "merchant_id"
   const sampleProduct = stats?.sample_product || "Pro ANC Noise-Cancelling Headphones"
+  const baseUrl = typeof window !== "undefined" && window.location.origin
+    ? window.location.origin
+    : (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
 
-  const transactCurlCommand = `curl -X POST http://localhost:3000/api/maas/${merchantId}/transact \\
+  const transactCurlCommand = `curl -X POST ${baseUrl}/api/maas/${merchantId}/transact \\
   -H "Authorization: Bearer ${currentToken}" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -218,7 +221,7 @@ export default function SettingsPage() {
     }
   }' | python3 -m json.tool`
 
-  const catalogCurlCommand = `curl -X GET "http://localhost:3000/api/maas/${merchantId}/catalog?q=headphones" \\
+  const catalogCurlCommand = `curl -X GET "${baseUrl}/api/maas/${merchantId}/catalog?q=headphones" \\
   -H "Authorization: Bearer ${currentToken}" | python3 -m json.tool`
 
   return (
@@ -520,13 +523,13 @@ export default function SettingsPage() {
             <label className="text-xs font-semibold text-zinc-400 mb-1 block">Razorpay Webhook Callback URL</label>
             <div className="flex items-center space-x-2">
               <code className="font-mono text-xs bg-zinc-950 px-3 py-2 rounded border border-zinc-800 flex-1 truncate text-zinc-300">
-                http://localhost:3000/api/webhooks/razorpay
+                {`${baseUrl}/api/webhooks/razorpay`}
               </code>
               <Button
                 size="sm"
                 variant="outline"
                 className="border-zinc-800"
-                onClick={() => copyText("webhook", "http://localhost:3000/api/webhooks/razorpay")}
+                onClick={() => copyText("webhook", `${baseUrl}/api/webhooks/razorpay`)}
               >
                 {copiedKey === "webhook" ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
               </Button>

@@ -437,7 +437,10 @@ export default function OnboardPage() {
                   variant="ghost"
                   className="h-7 text-xs text-zinc-300 hover:text-white"
                   onClick={() => {
-                    const snippet = `curl -X POST http://localhost:3000${createdData.transact_url} \\
+                    const baseUrl = typeof window !== "undefined" && window.location.origin
+                      ? window.location.origin
+                      : (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+                    const snippet = `curl -X POST ${baseUrl}${createdData.transact_url} \\
   -H "Authorization: Bearer ${createdData.maas_token}" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -467,7 +470,7 @@ export default function OnboardPage() {
                 </Button>
               </div>
               <pre className="font-mono text-xs bg-zinc-950 p-4 rounded-lg border border-zinc-800 text-zinc-300 overflow-x-auto whitespace-pre-wrap">
-{`curl -X POST http://localhost:3000${createdData.transact_url} \\
+{`curl -X POST ${(typeof window !== "undefined" && window.location.origin) || "http://localhost:3000"}${createdData.transact_url} \\
   -H "Authorization: Bearer ${createdData.maas_token}" \\
   -H "Content-Type: application/json" \\
   -d '{
