@@ -137,8 +137,14 @@ class RazorpayClientAdapter:
                 or key_id.lower().startswith("rzp_test_apex")
                 or key_id.lower().startswith("rzp_test_urban")
                 or key_id.lower().startswith("rzp_test_gourmet")
-                or "devpass" in (key_secret or "").lower()
-                or "test_secret" in (key_secret or "").lower()
+                or key_id.lower().startswith("rzp_test_zenith")
+                or key_id.lower().startswith("rzp_test_kavach")
+                or key_id.lower().startswith("rzp_test_aura")
+                or (key_secret and (
+                    key_secret.lower().startswith("secret_")
+                    or "devpass" in key_secret.lower()
+                    or "test_secret" in key_secret.lower()
+                ))
             ))
         )
 

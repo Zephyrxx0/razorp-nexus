@@ -123,6 +123,9 @@ export default function OnboardPage() {
       }
 
       setCreatedData(data)
+      if (typeof window !== "undefined" && data.maas_token && data.merchant_id) {
+        localStorage.setItem(`nexus_token_${data.merchant_id}`, data.maas_token)
+      }
       await refreshMerchants()
       await setActiveMerchantId(data.merchant_id)
       setStep(5)
@@ -433,6 +436,8 @@ export default function OnboardPage() {
   -H "Content-Type: application/json" \\
   -d '{
     "intent": "Buy 1 ${prodName}",
+    "buyer_email": "agent@buyer.ai",
+    "ip_address": "192.168.1.50"
     "buyer": {
       "email": "agent@buyer.ai",
       "ip": "198.51.100.42",

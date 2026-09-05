@@ -92,9 +92,26 @@ export default function SettingsPage() {
   }, [])
 
   useEffect(() => {
-    if (activeMerchant?.id) {
-      fetchMerchantDetails(activeMerchant.id)
-      setLivePlainToken(null)
+    if (!activeMerchant?.id) return
+    fetchMerchantDetails(activeMerchant.id)
+
+    // Check localStorage for saved active token
+    const cached = typeof window !== "undefined" ? localStorage.getItem(`nexus_token_${activeMerchant.id}`) : null
+    if (cached && !cached.includes("...")) {
+      setLivePlainToken(cached)
+    } else {
+      // Auto-generate an active token if none is cached, ensuring cURL is always ready to run
+      fetch(`/api/merchant/${activeMerchant.id}/token`, { method: "POST" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.token) {
+            setLivePlainToken(data.token)
+            if (typeof window !== "undefined") {
+              localStorage.setItem(`nexus_token_${activeMerchant.id}`, data.token)
+            }
+          }
+        })
+        .catch((err) => console.error("Auto-token generation error:", err))
     }
   }, [activeMerchant?.id, fetchMerchantDetails])
 
@@ -115,6 +132,9 @@ export default function SettingsPage() {
       const data = await res.json()
       if (res.ok && data.token) {
         setLivePlainToken(data.token)
+        if (typeof window !== "undefined") {
+          localStorage.setItem(`nexus_token_${activeMerchant.id}`, data.token)
+        }
         if (details) {
           setDetails({ ...details, token_preview: data.preview })
         }
@@ -179,7 +199,10 @@ export default function SettingsPage() {
     }
   }
 
-  const currentToken = livePlainToken || details?.token_preview || "YOUR_MAAS_TOKEN"
+  const currentToken =
+    livePlainToken ||
+    (details?.token_preview && !details.token_preview.includes("...") ? details.token_preview : null) ||
+    "YOUR_MAAS_TOKEN"
   const merchantId = activeMerchant?.id || "merchant_id"
   const sampleProduct = stats?.sample_product || "Pro ANC Noise-Cancelling Headphones"
 
