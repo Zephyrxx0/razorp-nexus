@@ -216,10 +216,10 @@ export default function SettingsPage() {
       "ip": "198.51.100.42",
       "device_id": "dev_agent_01"
     }
-  }'`
+  }' | python3 -m json.tool`
 
   const catalogCurlCommand = `curl -X GET "http://localhost:3000/api/maas/${merchantId}/catalog?q=headphones" \\
-  -H "Authorization: Bearer ${currentToken}"`
+  -H "Authorization: Bearer ${currentToken}" | python3 -m json.tool`
 
   return (
     <div className="max-w-4xl space-y-6 pb-12">

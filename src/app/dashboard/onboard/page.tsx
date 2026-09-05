@@ -61,6 +61,7 @@ export default function OnboardPage() {
     transact_url: string
   } | null>(null)
   const [copiedToken, setCopiedToken] = useState(false)
+  const [copiedSnippet, setCopiedSnippet] = useState(false)
   const [simulating, setSimulating] = useState(false)
   const [simResult, setSimResult] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -429,21 +430,54 @@ export default function OnboardPage() {
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-semibold text-zinc-400 block">Agent Curl Command Snippet</span>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-zinc-400 block">Agent Curl Command Snippet</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 text-xs text-zinc-300 hover:text-white"
+                  onClick={() => {
+                    const snippet = `curl -X POST http://localhost:3000${createdData.transact_url} \\
+  -H "Authorization: Bearer ${createdData.maas_token}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "intent": "Buy 1 ${prodName}",
+    "buyer": {
+      "email": "agent@buyer.ai",
+      "ip": "198.51.100.42",
+      "device_id": "dev_agent_01"
+    }
+  }' | python3 -m json.tool`
+                    navigator.clipboard.writeText(snippet)
+                    setCopiedSnippet(true)
+                    setTimeout(() => setCopiedSnippet(false), 2000)
+                  }}
+                >
+                  {copiedSnippet ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 mr-1" />
+                      Copy cURL
+                    </>
+                  )}
+                </Button>
+              </div>
               <pre className="font-mono text-xs bg-zinc-950 p-4 rounded-lg border border-zinc-800 text-zinc-300 overflow-x-auto whitespace-pre-wrap">
 {`curl -X POST http://localhost:3000${createdData.transact_url} \\
   -H "Authorization: Bearer ${createdData.maas_token}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "intent": "Buy 1 ${prodName}",
-    "buyer_email": "agent@buyer.ai",
-    "ip_address": "192.168.1.50"
     "buyer": {
       "email": "agent@buyer.ai",
       "ip": "198.51.100.42",
       "device_id": "dev_agent_01"
     }
-  }'`}
+  }' | python3 -m json.tool`}
               </pre>
             </div>
 
